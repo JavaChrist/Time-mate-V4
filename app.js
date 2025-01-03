@@ -72,25 +72,32 @@ document.addEventListener('DOMContentLoaded', function () {
         function openActivityForEdit(activityId, date) {
             const activities = JSON.parse(localStorage.getItem('activities')) || [];
             const activity = activities.find(a => a.id === activityId);
-            const modal = document.getElementById('modal');
+            const detail = activity?.activitiesDetails.find(d => d.date === date);
 
-            if (activity) {
-                const detail = activity.activitiesDetails.find(d => d.date === date);
+            if (activity && detail) {
+                document.getElementById('activity-name').value = activity.activityName;
+                document.getElementById('activity-name').disabled = true;
+                document.getElementById('activity-time-start-1').value = detail.startTime;
+                document.getElementById('activity-time-end-1').value = detail.endTime;
+                document.getElementById('activity-start-date').value = date;
+                document.getElementById('activity-start-date').disabled = true;
+                document.getElementById('activity-end-date').value = date;
+                document.getElementById('activity-end-date').disabled = true;
+                document.getElementById('activity-color').value = detail.color;
+                document.getElementById('activity-color').disabled = true;
+                document.getElementById('activity-realized-time').value = '';
 
-                if (detail) {
-                    document.getElementById('activity-name').value = activity.activityName;
-                    document.getElementById('activity-color').value = detail.color;
-                    document.getElementById('activity-time-start').value = detail.startTime;
-                    document.getElementById('activity-time-end').value = detail.endTime;
-                    document.getElementById('activity-start-date').value = detail.date;
-                    document.getElementById('activity-end-date').value = detail.date;
-                    // Afficher les heures réalisées existantes si elles existent
-                    document.getElementById('activity-realized-time').value = detail.realizedTime || '';
+                // Réinitialiser les champs de la deuxième plage horaire
+                document.getElementById('activity-time-start-2').value = '';
+                document.getElementById('activity-time-end-2').value = '';
+                document.getElementById('activity-time-start-2').disabled = true;
+                document.getElementById('activity-time-end-2').disabled = true;
 
-                    document.getElementById('save-event').setAttribute('data-activity-id', activityId);
-                    document.getElementById('save-event').setAttribute('data-activity-date', date);
-                    modal.style.display = 'block';
-                }
+                document.getElementById('save-event').setAttribute('data-activity-id', activityId);
+                document.getElementById('save-event').setAttribute('data-activity-date', date);
+
+                const modal = document.getElementById('modal');
+                modal.style.display = 'block';
             }
         }
 
@@ -158,31 +165,38 @@ document.addEventListener('DOMContentLoaded', function () {
         saveEventButton.addEventListener('click', function () {
             const activityId = saveEventButton.getAttribute('data-activity-id');
             const activityName = document.getElementById('activity-name').value;
-            const startTime = document.getElementById('activity-time-start').value;
-            const endTime = document.getElementById('activity-time-end').value;
+            const startTimes = [
+                document.getElementById('activity-time-start-1').value,
+                document.getElementById('activity-time-start-2').value
+            ];
+            const endTimes = [
+                document.getElementById('activity-time-end-1').value,
+                document.getElementById('activity-time-end-2').value
+            ];
             const startDateValue = document.getElementById('activity-start-date').value;
             const endDateValue = document.getElementById('activity-end-date').value;
             const color = document.getElementById('activity-color').value;
             const realizedTime = parseFloat(document.getElementById('activity-realized-time').value) || 0;
 
             // Vérification des champs requis
-            if (!activityName || !startTime || !endTime || !startDateValue) {
-                alert('Veuillez remplir tous les champs requis.');
+            if (!activityName || !startDateValue || !startTimes.some((time, index) => time && endTimes[index])) {
+                alert('Veuillez remplir au moins le nom et une plage horaire complète.');
                 return;
             }
 
             const startDate = new Date(startDateValue);
 
             if (activityId) {
-                updateActivityDetail(activityId, startDateValue, startTime, endTime, realizedTime, color);
+                updateActivityDetail(activityId, startDateValue, startTimes[0], endTimes[0], realizedTime, color);
             } else {
-                saveNewActivity(activityName, startDate, endDateValue, startTime, endTime, color, realizedTime);
+                saveNewActivity(activityName, startDate, endDateValue, startTimes, endTimes, color, realizedTime);
             }
 
             loadActivitiesFromStorage(currentViewDate);
-            updateActivitiesTable(); // Mettre à jour le tableau des activités
+            updateActivitiesTable();
             updateActivityNamesList();
             modal.style.display = 'none';
+            document.getElementById('activity-realized-time').value = '';
             resetModalFields();
         });
 
@@ -197,68 +211,71 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (detailIndex !== -1) {
                     const oldDetail = activity.activitiesDetails[detailIndex];
+                    const newRealizedTime = parseFloat(realizedTime || 0);
 
-                    // Calculer les anciennes heures prévues
-                    const oldStartTime = new Date(`1970-01-01T${oldDetail.startTime}`);
-                    const oldEndTime = new Date(`1970-01-01T${oldDetail.endTime}`);
-                    const oldPlannedHours = (oldEndTime - oldStartTime) / (1000 * 3600);
+                    // Calculer les heures prévues pour ce détail spécifique
+                    const startTimeDate = new Date(`1970-01-01T${startTime}`);
+                    const endTimeDate = new Date(`1970-01-01T${endTime}`);
+                    const plannedHours = ((endTimeDate - startTimeDate) / (1000 * 3600)).toFixed(2);
 
-                    // Calculer les nouvelles heures prévues
-                    const newStartTime = new Date(`1970-01-01T${startTime}`);
-                    const newEndTime = new Date(`1970-01-01T${endTime}`);
-                    const newPlannedHours = (newEndTime - newStartTime) / (1000 * 3600);
+                    // Calculer le total des heures réalisées pour ce détail
+                    const totalRealizedForDetail = (parseFloat(oldDetail.realizedTime || 0) + newRealizedTime).toFixed(2);
 
-                    // Mettre à jour le total des heures prévues
-                    activity.totalHours = (parseFloat(activity.totalHours) - oldPlannedHours + newPlannedHours).toFixed(2);
+                    // Important : Mettre d'abord à jour les heures réalisées totales
+                    activity.realizedHours = (parseFloat(activity.realizedHours || 0) + newRealizedTime).toFixed(2);
 
-                    // Gérer les heures réalisées
-                    const oldRealizedTime = parseFloat(oldDetail.realizedTime || 0);
-
-                    // Si un nouveau temps réalisé est fourni
-                    if (realizedTime !== '' && realizedTime !== undefined) {
-                        const newRealizedTime = parseFloat(realizedTime);
-                        // Mettre à jour le total des heures réalisées
-                        activity.realizedHours = (parseFloat(activity.realizedHours || 0) - oldRealizedTime + newRealizedTime).toFixed(2);
-                        // Mettre à jour les détails avec le nouveau temps réalisé
-                        activity.activitiesDetails[detailIndex] = {
-                            date: date,
-                            startTime,
-                            endTime,
-                            color,
-                            realizedTime: newRealizedTime
-                        };
-                    } else {
-                        // Conserver les heures réalisées existantes
-                        activity.activitiesDetails[detailIndex] = {
-                            date: date,
-                            startTime,
-                            endTime,
-                            color,
-                            realizedTime: oldDetail.realizedTime || 0
-                        };
-                    }
-
+                    // Sauvegarder la mise à jour des heures réalisées
                     activities[activityIndex] = activity;
                     localStorage.setItem('activities', JSON.stringify(activities));
 
-                    // Réinitialiser le champ des heures réalisées
+                    // Ensuite, vérifier si ce détail spécifique est terminé
+                    if (parseFloat(totalRealizedForDetail) >= parseFloat(plannedHours)) {
+                        // Supprimer uniquement ce détail du calendrier
+                        activity.activitiesDetails.splice(detailIndex, 1);
+
+                        // Sauvegarder après la suppression du détail
+                        localStorage.setItem('activities', JSON.stringify(activities));
+
+                        // Fermer la modale
+                        const modal = document.getElementById('modal');
+                        modal.style.display = 'none';
+                    } else {
+                        // Mettre à jour les heures réalisées pour ce détail
+                        activity.activitiesDetails[detailIndex] = {
+                            ...oldDetail,
+                            realizedTime: totalRealizedForDetail
+                        };
+
+                        // Sauvegarder la mise à jour du détail
+                        localStorage.setItem('activities', JSON.stringify(activities));
+                    }
+
+                    // Vider le champ des heures réalisées
                     document.getElementById('activity-realized-time').value = '';
 
                     // Mettre à jour l'affichage
-                    loadActivitiesFromStorage(currentViewDate);
                     updateActivitiesTable();
+                    loadActivitiesFromStorage(currentViewDate);
                 }
             }
         }
 
         // Sauvegarder une nouvelle activité
-        function saveNewActivity(activityName, startDate, endDateValue, startTime, endTime, color, realizedTime) {
+        function saveNewActivity(activityName, startDate, endDateValue, startTimes, endTimes, color, realizedTime) {
             const activities = JSON.parse(localStorage.getItem('activities')) || [];
             const endDate = new Date(endDateValue);
             const dayDifference = Math.round((endDate - startDate) / (1000 * 3600 * 24));
 
-            // Calculer les heures prévues pour cette nouvelle entrée
-            const plannedHoursForThisEntry = parseFloat(((dayDifference + 1) * ((new Date(`1970-01-01T${endTime}`) - new Date(`1970-01-01T${startTime}`)) / (1000 * 3600))).toFixed(2));
+            // Calculer les heures prévues totales pour toutes les plages
+            let totalPlannedHours = 0;
+            startTimes.forEach((startTime, index) => {
+                if (startTime && endTimes[index]) {
+                    const start = new Date(`1970-01-01T${startTime}`);
+                    const end = new Date(`1970-01-01T${endTimes[index]}`);
+                    totalPlannedHours += ((end - start) / (1000 * 3600));
+                }
+            });
+            totalPlannedHours = totalPlannedHours * (dayDifference + 1);
 
             // Chercher si une activité avec le même nom existe déjà
             const existingActivityIndex = activities.findIndex(a => a.activityName === activityName);
@@ -271,25 +288,36 @@ document.addEventListener('DOMContentLoaded', function () {
                 for (let i = 0; i <= dayDifference; i++) {
                     const currentDate = new Date(startDate);
                     currentDate.setDate(currentDate.getDate() + i);
+                    const dateStr = currentDate.toISOString().split('T')[0];
 
-                    existingActivity.activitiesDetails.push({
-                        date: currentDate.toISOString().split('T')[0],
-                        startTime,
-                        endTime,
-                        color,
-                        realizedTime: 0
+                    // Créer un tableau de plages horaires pour cette date
+                    const timeSlots = [];
+                    startTimes.forEach((startTime, index) => {
+                        if (startTime && endTimes[index]) {
+                            timeSlots.push({
+                                startTime: startTime,
+                                endTime: endTimes[index],
+                                color: color,
+                                realizedTime: 0
+                            });
+                        }
+                    });
+
+                    // Ajouter chaque plage horaire comme un détail séparé
+                    timeSlots.forEach(slot => {
+                        existingActivity.activitiesDetails.push({
+                            date: dateStr,
+                            startTime: slot.startTime,
+                            endTime: slot.endTime,
+                            color: color,
+                            realizedTime: 0
+                        });
                     });
                 }
 
-                // Mettre à jour le total des heures prévues
-                existingActivity.totalHours = (parseFloat(existingActivity.totalHours) + plannedHoursForThisEntry).toFixed(2);
-
-                // Mettre à jour les heures réalisées si nécessaire
-                if (realizedTime > 0) {
-                    existingActivity.realizedHours = (parseFloat(existingActivity.realizedHours || 0) + realizedTime).toFixed(2);
-                }
-
+                existingActivity.totalHours = (parseFloat(existingActivity.totalHours) + totalPlannedHours).toFixed(2);
                 activities[existingActivityIndex] = existingActivity;
+
             } else {
                 // Si l'activité n'existe pas, créer une nouvelle entrée
                 let activitiesDetails = [];
@@ -297,21 +325,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 for (let i = 0; i <= dayDifference; i++) {
                     const currentDate = new Date(startDate);
                     currentDate.setDate(currentDate.getDate() + i);
+                    const dateStr = currentDate.toISOString().split('T')[0];
 
-                    activitiesDetails.push({
-                        date: currentDate.toISOString().split('T')[0],
-                        startTime,
-                        endTime,
-                        color,
-                        realizedTime: 0
+                    // Ajouter chaque plage horaire valide
+                    startTimes.forEach((startTime, index) => {
+                        if (startTime && endTimes[index]) {
+                            activitiesDetails.push({
+                                date: dateStr,
+                                startTime: startTime,
+                                endTime: endTimes[index],
+                                color: color,
+                                realizedTime: 0
+                            });
+                        }
                     });
                 }
 
                 const newActivity = {
                     id: generateUniqueId(),
                     activityName,
-                    totalHours: plannedHoursForThisEntry,
-                    realizedHours: realizedTime || 0,
+                    totalHours: totalPlannedHours.toFixed(2),
+                    realizedHours: 0,
                     activitiesDetails
                 };
 
@@ -366,23 +400,28 @@ document.addEventListener('DOMContentLoaded', function () {
                         activityElement.classList.add('activity');
                         activityElement.style.backgroundColor = detail.color;
                         activityElement.setAttribute('data-activity-id', activity.id);
+                        activityElement.setAttribute('data-activity-date', detail.date);
 
-                        // Calculer les heures prévues pour cette activité
+                        // Calculer les heures prévues et restantes
                         const startTime = new Date(`1970-01-01T${detail.startTime}`);
                         const endTime = new Date(`1970-01-01T${detail.endTime}`);
                         const plannedHours = ((endTime - startTime) / (1000 * 3600)).toFixed(2);
+                        const remainingHours = (plannedHours - (detail.realizedTime || 0)).toFixed(2);
 
                         activityElement.innerHTML = `
                             <span class="activity-name">${activity.activityName}</span>
                             <span class="activity-time">${detail.startTime} - ${detail.endTime}</span>
-                            <span class="activity-hours">(${plannedHours}h)</span>
+                            <span class="activity-hours">(${remainingHours}h restantes)</span>
                         `;
 
+                        // Ajouter l'événement de clic pour ouvrir la modale
                         activityElement.addEventListener('click', function () {
                             openActivityForEdit(activity.id, detail.date);
                         });
 
+                        // Ajouter le bouton de suppression
                         addDeleteButton(activityElement, activity.id, detail.date);
+
                         dayContainer.appendChild(activityElement);
                     }
                 });
@@ -397,27 +436,79 @@ document.addEventListener('DOMContentLoaded', function () {
             const tableBody = activitiesLog.querySelector('tbody');
             if (!tableBody) return;
 
+            // Récupérer les activités actuelles et l'historique
             const activities = JSON.parse(localStorage.getItem('activities')) || [];
+            const historique = JSON.parse(localStorage.getItem('historique')) || [];
+
+            // Créer un objet pour stocker les totaux par nom d'activité
+            const activityTotals = {};
+
+            // Calculer les totaux pour les activités en cours
+            activities.forEach(activity => {
+                const name = activity.activityName;
+                if (!activityTotals[name]) {
+                    activityTotals[name] = {
+                        plannedHours: 0,
+                        realizedHours: 0
+                    };
+                }
+
+                // Ajouter les heures prévues pour chaque détail
+                activity.activitiesDetails.forEach(detail => {
+                    const startTime = new Date(`1970-01-01T${detail.startTime}`);
+                    const endTime = new Date(`1970-01-01T${detail.endTime}`);
+                    const plannedHours = (endTime - startTime) / (1000 * 3600);
+
+                    activityTotals[name].plannedHours += plannedHours;
+                    activityTotals[name].realizedHours += parseFloat(detail.realizedTime || 0);
+                });
+            });
+
+            // Ajouter ou mettre à jour avec les données de l'historique
+            historique.forEach(historyItem => {
+                const name = historyItem.activityName;
+                if (!activityTotals[name]) {
+                    activityTotals[name] = {
+                        plannedHours: parseFloat(historyItem.totalHours || 0),
+                        realizedHours: parseFloat(historyItem.realizedHours || 0)
+                    };
+                } else {
+                    // Conserver les heures prévues existantes et ajouter les heures réalisées
+                    activityTotals[name].realizedHours += parseFloat(historyItem.realizedHours || 0);
+                }
+            });
+
+            // Vider le tableau
             tableBody.innerHTML = '';
 
-            activities.forEach(activity => {
+            // Remplir le tableau avec les totaux
+            Object.entries(activityTotals).forEach(([name, totals]) => {
                 const row = tableBody.insertRow();
-                const checkboxCell = row.insertCell(0);
-                const nameCell = row.insertCell(1);
-                const plannedHoursCell = row.insertCell(2);
-                const realizedHoursCell = row.insertCell(3);
-                const remainingHoursCell = row.insertCell(4);
 
+                // Case à cocher
+                const checkboxCell = row.insertCell(0);
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.classList.add('select-activity');
-                checkbox.setAttribute('data-activity-id', activity.id);
-
+                checkbox.setAttribute('data-activity-name', name);
                 checkboxCell.appendChild(checkbox);
-                nameCell.textContent = activity.activityName;
-                plannedHoursCell.textContent = activity.totalHours.toFixed(2);
-                realizedHoursCell.textContent = activity.realizedHours?.toFixed(2) || '0.00';
-                remainingHoursCell.textContent = (activity.totalHours - (activity.realizedHours || 0)).toFixed(2);
+
+                // Nom de l'activité
+                const nameCell = row.insertCell(1);
+                nameCell.textContent = name;
+
+                // Heures prévues (toujours conservées)
+                const plannedHoursCell = row.insertCell(2);
+                plannedHoursCell.textContent = totals.plannedHours.toFixed(2);
+
+                // Heures réalisées (cumul des heures saisies)
+                const realizedHoursCell = row.insertCell(3);
+                realizedHoursCell.textContent = totals.realizedHours.toFixed(2);
+
+                // Heures restantes (différence entre prévues et réalisées)
+                const remainingHoursCell = row.insertCell(4);
+                const remainingHours = Math.max(0, totals.plannedHours - totals.realizedHours);
+                remainingHoursCell.textContent = remainingHours.toFixed(2);
             });
         }
 
@@ -469,53 +560,42 @@ document.addEventListener('DOMContentLoaded', function () {
 
         function updateActivityNamesList() {
             const activities = JSON.parse(localStorage.getItem('activities')) || [];
-            const uniqueNames = [...new Set(activities.map(activity => activity.activityName))];
+            const historique = JSON.parse(localStorage.getItem('historique')) || [];
+
+            // Combiner les noms des activités actuelles et de l'historique
+            const allNames = new Set([
+                ...activities.map(activity => activity.activityName),
+                ...historique.map(item => item.activityName)
+            ]);
 
             const activityNameInput = document.getElementById('activity-name');
             if (!activityNameInput) return;
 
             const namesContainer = document.createElement('div');
             namesContainer.id = 'names-container';
-            namesContainer.style.position = 'absolute';
-            namesContainer.style.width = '100%';
-            namesContainer.style.maxHeight = '200px';
-            namesContainer.style.overflowY = 'auto';
-            namesContainer.style.backgroundColor = 'white';
-            namesContainer.style.border = '1px solid #ccc';
-            namesContainer.style.borderRadius = '4px';
-            namesContainer.style.display = 'none';
-            namesContainer.style.zIndex = '1000';
+            namesContainer.classList.add('names-container');
 
-            uniqueNames.forEach(name => {
+            allNames.forEach(name => {
                 const nameItem = document.createElement('div');
-                nameItem.style.padding = '8px';
-                nameItem.style.display = 'flex';
-                nameItem.style.justifyContent = 'space-between';
-                nameItem.style.alignItems = 'center';
-                nameItem.style.cursor = 'pointer';
-                nameItem.style.borderBottom = '1px solid #eee';
+                nameItem.classList.add('name-item');
 
                 const nameText = document.createElement('span');
                 nameText.textContent = name;
-                nameText.style.flex = '1';
+                nameText.classList.add('name-text');
 
-                // Ajout du bouton de suppression
+                // Ajouter le bouton X
                 const deleteButton = document.createElement('span');
                 deleteButton.textContent = '✖';
-                deleteButton.style.color = '#ff4444';
-                deleteButton.style.cursor = 'pointer';
-                deleteButton.style.marginLeft = '8px';
-                deleteButton.style.padding = '0 4px';
+                deleteButton.classList.add('delete-name-button');
 
                 deleteButton.addEventListener('click', (e) => {
                     e.stopPropagation();
                     if (confirm('Voulez-vous vraiment supprimer ce nom de la liste ?')) {
-                        const activities = JSON.parse(localStorage.getItem('activities')) || [];
-                        const updatedActivities = activities.filter(activity => activity.activityName !== name);
-                        localStorage.setItem('activities', JSON.stringify(updatedActivities));
-                        nameItem.remove();
+                        const historique = JSON.parse(localStorage.getItem('historique')) || [];
+                        const updatedHistorique = historique.filter(item => item.activityName !== name);
+                        localStorage.setItem('historique', JSON.stringify(updatedHistorique));
 
-                        // Si plus aucun nom dans la liste, cacher le conteneur
+                        nameItem.remove();
                         if (namesContainer.children.length === 0) {
                             namesContainer.style.display = 'none';
                         }
@@ -525,49 +605,36 @@ document.addEventListener('DOMContentLoaded', function () {
                 nameItem.appendChild(nameText);
                 nameItem.appendChild(deleteButton);
 
-                // Sélectionner le nom
+                // Sélectionner le nom (uniquement sur clic du texte)
                 nameText.addEventListener('click', () => {
                     activityNameInput.value = name;
                     namesContainer.style.display = 'none';
                 });
 
-                // Effet hover
-                nameItem.addEventListener('mouseenter', () => {
-                    nameItem.style.backgroundColor = '#f0f0f0';
-                });
-                nameItem.addEventListener('mouseleave', () => {
-                    nameItem.style.backgroundColor = 'white';
-                });
-
                 namesContainer.appendChild(nameItem);
             });
 
-            // Remplacer l'ancien conteneur s'il existe
             const oldContainer = document.getElementById('names-container');
             if (oldContainer) {
                 oldContainer.remove();
             }
 
-            // Ajouter le nouveau conteneur
             const inputContainer = activityNameInput.parentElement;
-            inputContainer.style.position = 'relative';
+            inputContainer.classList.add('input-container');
             inputContainer.appendChild(namesContainer);
 
-            // Gérer l'affichage de la liste
             activityNameInput.addEventListener('focus', () => {
                 if (namesContainer.children.length > 0) {
                     namesContainer.style.display = 'block';
                 }
             });
 
-            // Cacher la liste quand on clique en dehors
             document.addEventListener('click', (e) => {
                 if (!namesContainer.contains(e.target) && e.target !== activityNameInput) {
                     namesContainer.style.display = 'none';
                 }
             });
 
-            // Filtrer la liste pendant la saisie
             activityNameInput.addEventListener('input', () => {
                 const searchText = activityNameInput.value.toLowerCase();
                 Array.from(namesContainer.children).forEach(item => {
