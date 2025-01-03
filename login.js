@@ -104,3 +104,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// Vérification de l'état d'authentification
+firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+        // L'utilisateur est déjà connecté
+        // Vérifiez si nous sommes sur la page de login avant de rediriger
+        if (window.location.pathname.includes('index.html')) {
+            window.location.href = 'app.html';
+        }
+    } else {
+        // L'utilisateur n'est pas connecté
+        // Si nous sommes sur app.html, redirigeons vers la page de login
+        if (window.location.pathname.includes('app.html')) {
+            window.location.href = 'index.html';
+        }
+    }
+});
