@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
             deleteButton.classList.add('delete-activity-btn');
             deleteButton.style.color = 'white';
             deleteButton.style.cursor = 'pointer';
-            deleteButton.style.marginLeft = '10px';
+            deleteButton.style.marginLeft = '100px';
 
             deleteButton.addEventListener('click', function (event) {
                 event.stopPropagation(); // Empêche d'ouvrir la modale lors du clic sur supprimer
@@ -465,13 +465,15 @@ document.addEventListener('DOMContentLoaded', function () {
         displayWeekNumber(currentViewDate);
         loadActivitiesFromStorage(currentViewDate);
         updateActivitiesTable();
+        updateActivityNamesList();
 
         function updateActivityNamesList() {
             const activities = JSON.parse(localStorage.getItem('activities')) || [];
-            const datalist = document.getElementById('activity-names');
             const uniqueNames = [...new Set(activities.map(activity => activity.activityName))];
 
-            // Créer un conteneur pour la liste des noms
+            const activityNameInput = document.getElementById('activity-name');
+            if (!activityNameInput) return;
+
             const namesContainer = document.createElement('div');
             namesContainer.id = 'names-container';
             namesContainer.style.position = 'absolute';
@@ -497,32 +499,36 @@ document.addEventListener('DOMContentLoaded', function () {
                 nameText.textContent = name;
                 nameText.style.flex = '1';
 
-                const deleteBtn = document.createElement('span');
-                deleteBtn.textContent = '✖';
-                deleteBtn.style.marginLeft = '10px';
-                deleteBtn.style.color = 'red';
-                deleteBtn.style.cursor = 'pointer';
+                // Ajout du bouton de suppression
+                const deleteButton = document.createElement('span');
+                deleteButton.textContent = '✖';
+                deleteButton.style.color = '#ff4444';
+                deleteButton.style.cursor = 'pointer';
+                deleteButton.style.marginLeft = '8px';
+                deleteButton.style.padding = '0 4px';
 
-                nameItem.appendChild(nameText);
-                nameItem.appendChild(deleteBtn);
-
-                // Sélectionner le nom
-                nameText.addEventListener('click', () => {
-                    document.getElementById('activity-name').value = name;
-                    namesContainer.style.display = 'none';
-                });
-
-                // Supprimer le nom
-                deleteBtn.addEventListener('click', (e) => {
+                deleteButton.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    if (confirm(`Voulez-vous supprimer "${name}" de la liste des suggestions ?`)) {
+                    if (confirm('Voulez-vous vraiment supprimer ce nom de la liste ?')) {
                         const activities = JSON.parse(localStorage.getItem('activities')) || [];
-                        localStorage.setItem('activities', JSON.stringify(activities));
-                        namesContainer.removeChild(nameItem);
+                        const updatedActivities = activities.filter(activity => activity.activityName !== name);
+                        localStorage.setItem('activities', JSON.stringify(updatedActivities));
+                        nameItem.remove();
+
+                        // Si plus aucun nom dans la liste, cacher le conteneur
                         if (namesContainer.children.length === 0) {
                             namesContainer.style.display = 'none';
                         }
                     }
+                });
+
+                nameItem.appendChild(nameText);
+                nameItem.appendChild(deleteButton);
+
+                // Sélectionner le nom
+                nameText.addEventListener('click', () => {
+                    activityNameInput.value = name;
+                    namesContainer.style.display = 'none';
                 });
 
                 // Effet hover
@@ -536,18 +542,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 namesContainer.appendChild(nameItem);
             });
 
-            // Remplacer l'ancien datalist
+            // Remplacer l'ancien conteneur s'il existe
             const oldContainer = document.getElementById('names-container');
             if (oldContainer) {
                 oldContainer.remove();
             }
 
-            const inputContainer = document.getElementById('activity-name').parentElement;
+            // Ajouter le nouveau conteneur
+            const inputContainer = activityNameInput.parentElement;
             inputContainer.style.position = 'relative';
             inputContainer.appendChild(namesContainer);
 
             // Gérer l'affichage de la liste
-            const activityNameInput = document.getElementById('activity-name');
             activityNameInput.addEventListener('focus', () => {
                 if (namesContainer.children.length > 0) {
                     namesContainer.style.display = 'block';
@@ -571,9 +577,5 @@ document.addEventListener('DOMContentLoaded', function () {
                 namesContainer.style.display = 'block';
             });
         }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            updateActivityNamesList();
-        });
     }
 });
