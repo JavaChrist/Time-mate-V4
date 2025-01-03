@@ -1,0 +1,565 @@
+/* Reset des styles par défaut */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Styles généraux */
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+/* Typographie */
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Boutons */
+button,
+a {
+  padding: 8px 16px;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(79, 5, 5, 0.433);
+  text-decoration: none;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* En-tête */
+header {
+  background-color: #333;
+  color: #fff;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.header-container {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+  background-color: #333;
+}
+
+/* Navigation des semaines */
+.week-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.week-number {
+  padding: 8px 16px;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(79, 5, 5, 0.433);
+  font-family: Arial, sans-serif;
+  font-size: 17px;
+}
+
+.week-number:hover {
+  background-color: #0056b3;
+}
+
+/* Calendrier */
+.calendar-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: #f2f2f2;
+  border: 1px solid #0e0c0c;
+  border-radius: 4px;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.calendar-day {
+  flex: 1;
+  text-align: center;
+  padding: 10px 30px;
+  border-radius: 8px;
+  margin: 0 5px;
+  background-color: #007bff;
+  color: white;
+}
+
+.calendar-body {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.calendar-day-body {
+  flex: 1;
+  min-height: 150px;
+  margin: 5px;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.calendar-day .day-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+}
+
+.calendar-day .date-display {
+  font-size: 14px;
+  color: white;
+}
+
+/* Activité */
+.calendar-day-body .activity {
+  background-color: #e3f2fd;
+  border-radius: 4px;
+  padding: 5px;
+  margin-bottom: 5px;
+  text-align: center;
+  font-size: 18px;
+  color: black;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  word-wrap: break-word;
+}
+
+.activity-name {
+  font-weight: bold;
+  display: block;
+}
+
+.activity-time {
+  color: #fff;
+  font-size: 16px;
+  display: block;
+}
+
+.activity-hours {
+  color: #fff;
+  font-size: 14px;
+  font-style: italic;
+  display: block;
+  margin-top: 2px;
+}
+
+/* Formulaire */
+form {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+button[type="submit"] {
+  padding: 10px 20px;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+/* Centrer le conteneur du timer */
+#timer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 10px auto;
+  padding: 20px;
+  background: linear-gradient(145deg, #0a19a3, #0f6de0); /* Argenté */
+  box-shadow: 10px 10px 20px #a0a0a0, -10px -10px 20px #e4e4e4; /* Ombres pour effet 3D */
+  border-radius: 15px;
+  width: 60%;
+  max-width: 500px;
+}
+
+/* Timer effet 3D argenté */
+#timer-display {
+  font-size: 3rem;
+  color: #333; /* Couleur du texte */
+  padding: 20px 40px;
+  background: linear-gradient(145deg, #0a19a3, #0f6de0); /* Couleur argentée */
+  box-shadow: inset 5px 5px 10px #a0a0a0, inset -5px -5px 10px #e4e4e4;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+/* Boutons stylisés 3D argentés */
+#timer-pause,
+#timer-reset {
+  font-size: 1.2rem;
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: linear-gradient(145deg, #0a19a3, #0f6de0); /* Boutons argentés */
+  box-shadow: 5px 5px 10px #a0a0a0, -5px -5px 10px #e4e4e4;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#timer-pause:hover,
+#timer-reset:hover {
+  transform: translateY(-5px);
+  box-shadow: 8px 8px 15px #a0a0a0, -8px -8px 15px #e4e4e4;
+}
+
+/* Animation au clic sur les boutons */
+#timer-pause:active,
+#timer-reset:active {
+  transform: translateY(2px);
+  box-shadow: 3px 3px 6px #a0a0a0, -3px -3px 6px #e4e4e4;
+}
+
+#openModal {
+  margin-top: 20px;
+}
+
+/* Modal */
+.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  display: none; /* La modale est cachée par défaut */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Fond noir transparent */
+}
+
+.modal-content {
+  background-color: #766be775;
+  padding: 20px;
+  width: 80%;
+  max-width: 600px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  position: relative;
+  margin: 50px auto;
+}
+
+.close {
+  color: #999;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.close:hover,
+.close:focus {
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal.show {
+  opacity: 1; /* Affiche la modale avec effet de fondu */
+  visibility: visible;
+}
+
+/* Boutons spécifiques */
+.back-button,
+.reset-button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  box-shadow: 0 0 10px rgba(79, 5, 5, 0.433);
+  margin-top: 10px;
+}
+
+.back-button:hover,
+.reset-button:hover {
+  background-color: #0056b3;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-direction: row-reverse;
+}
+
+/* Color labels */
+.color-label {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.color-label.red {
+  color: #ff0000;
+}
+
+.color-label.green {
+  color: #00ff00;
+}
+
+.color-label.blue {
+  color: #0000ff;
+}
+
+.color-label.yellow {
+  color: #ffff00;
+}
+
+.color-label.purple {
+  color: #800080;
+}
+
+.color-label.orange {
+  color: #ffa500;
+}
+
+.color-label.pink {
+  color: #ffc0cb;
+}
+
+.color-label.brown {
+  color: #a52a2a;
+}
+
+.color-label.gray {
+  color: #808080;
+}
+
+.color-label.black {
+  color: #000000;
+}
+
+.color-label.teal {
+  color: #008080;
+}
+
+.color-label.navy {
+  color: #000080;
+}
+
+.color-label.olive {
+  color: #808000;
+}
+
+.color-label.lime {
+  color: #00ff00;
+}
+
+.color-label.magenta {
+  color: #ff00ff;
+}
+
+#activity-color option:hover {
+  background-color: inherit;
+  color: inherit;
+}
+
+/* Color options */
+.color-option {
+  display: flex;
+  align-items: center;
+}
+
+#activity-color option[value="red"] {
+  color: #ff0000;
+}
+
+#activity-color option[value="green"] {
+  color: #00ff00;
+}
+
+#activity-color option[value="blue"] {
+  color: #0000ff;
+}
+
+#activity-color option[value="yellow"] {
+  color: #ffff00;
+}
+
+#activity-color option[value="purple"] {
+  color: #800080;
+}
+
+#activity-color option[value="orange"] {
+  color: #ffa500;
+}
+
+#activity-color option[value="pink"] {
+  color: #ffc0cb;
+}
+
+#activity-color option[value="brown"] {
+  color: #a52a2a;
+}
+
+#activity-color option[value="gray"] {
+  color: #808080;
+}
+
+#activity-color option[value="black"] {
+  color: #000000;
+}
+
+#activity-color option[value="teal"] {
+  color: #008080;
+}
+
+#activity-color option[value="navy"] {
+  color: #000080;
+}
+
+#activity-color option[value="olive"] {
+  color: #808000;
+}
+
+#activity-color option[value="lime"] {
+  color: #00ff00;
+}
+
+#activity-color option[value="magenta"] {
+  color: #ff00ff;
+}
+
+/* Tableau */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+thead {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+thead th {
+  padding: 10px;
+  text-align: left;
+  border-right: 1px solid #007bff;
+}
+
+thead th:last-child {
+  border-right: none;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #d3d3d3; /* Gris clair */
+}
+
+tbody tr:nth-child(even) {
+  background-color: #a9a9a9; /* Gris */
+}
+
+tbody tr:hover {
+  background-color: #cccccc;
+}
+
+tbody td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+.delete-activity-btn {
+  color: white;
+  background-color: #007bff;
+  padding: 5px;
+  border-radius: 50%;
+  font-size: 14px;
+  line-height: 1;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  margin-left: 5px;
+}
+.delete-activity-btn:hover {
+  background-color: #0056b3;
+}
+
+.activity-realized {
+  color: #fff;
+  font-size: 14px;
+  font-style: italic;
+  display: block;
+  margin-top: 2px;
+}
+
+.activity-remaining {
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  display: block;
+  margin-top: 2px;
+}

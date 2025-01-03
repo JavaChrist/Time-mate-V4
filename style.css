@@ -1,0 +1,346 @@
+/* Style général pour le site */
+body {
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+header {
+  background-color: #333;
+  color: #fff;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+header p {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  color: #ccc;
+}
+
+/* Styles pour les boutons d'import/export */
+#import-export-buttons {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#import-export-buttons button {
+  padding: 10px 20px;
+  margin: 5px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+#import-export-buttons button:hover {
+  background-color: #0056b3;
+}
+
+#import-export-buttons button:active {
+  background-color: #003f7f;
+}
+
+#import-export-buttons input[type="file"] {
+  display: none;
+}
+
+.highlight {
+  background-color: yellow;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Style pour la gestion des catégories (page d'accueil) */
+#add-category {
+  margin: 2rem;
+  background-color: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 5px;
+}
+
+#category-form {
+  display: flex;
+  flex-direction: column;
+}
+
+#category-form label {
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+#category-form input {
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+#category-form button {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: #f60707;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+#category-form button:hover {
+  background-color: #555;
+}
+
+/* Style pour les cartes de catégories sur la page d'accueil */
+.category-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.category-card {
+  flex: 1 1 calc(25% - 1rem);
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  text-decoration: none;
+  color: #333;
+}
+
+.category-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.category-card img {
+  max-width: 40px;
+  margin-bottom: 1rem;
+}
+
+.category-card h3 {
+  font-size: 1.2rem;
+  margin: 0;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
+}
+
+/* Couleurs spécifiques pour chaque catégorie */
+.category-card.travaux {
+  background-color: #e34c26be;
+  color: white;
+}
+
+.category-card.projets {
+  background-color: #264ce4b2;
+  color: white;
+}
+
+.category-card.reseaux {
+  background-color: #f7de1eca;
+  color: white;
+}
+.category-card.afaire {
+  background-color: #61dcfb81;
+  color: white;
+}
+.category-card.divers {
+  background-color: #5fd715c6;
+  color: white;
+}
+
+.category-card.codes {
+  background-color: #000405c6;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .category-card {
+    flex: 1 1 calc(50% - 1rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .category-card {
+    flex: 1 1 100%;
+  }
+}
+
+.container-style-text {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+padding: 20px;
+}
+
+.text-style-buttons button {
+  padding: 10px 20px;
+  cursor: pointer;
+  background: linear-gradient(145deg, #007bff, #0056b3);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  transition: transform 0.3s ease, box-shadow 0.3s ease,
+    background-color 0.3s ease;
+  box-shadow: 0 4px rgba(0, 74, 143, 0.8);
+}
+
+/* Effet 3D lors du clic */
+.text-style-buttons button:active,
+button:active,
+.delete-button:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px rgba(0, 74, 143, 0.8);
+}
+
+/* Couleurs personnalisées pour les boutons de style */
+.text-style-buttons button:nth-child(1) {
+  background: linear-gradient(145deg, #ff4757, #b33241);
+  box-shadow: 0 4px rgba(179, 50, 65, 0.8);
+}
+
+.text-style-buttons button:nth-child(2) {
+  background: linear-gradient(145deg, #ffa502, #b37600);
+  box-shadow: 0 4px rgba(179, 118, 0, 0.8);
+}
+
+.text-style-buttons button:nth-child(3) {
+  background: linear-gradient(145deg, #1e90ff, #1569b2);
+  box-shadow: 0 4px rgba(21, 105, 178, 0.8);
+}
+
+.text-style-buttons button:nth-child(4) {
+  background: linear-gradient(145deg, #2ed573, #1e9e50);
+  box-shadow: 0 4px rgba(30, 158, 80, 0.8);
+}
+
+.text-style-buttons button:nth-child(5) {
+  background: linear-gradient(145deg, #3742fa, #252dab);
+  box-shadow: 0 4px rgba(37, 45, 171, 0.8);
+}
+
+.text-style-buttons button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+
+
+/* Style pour les pages de catégories (ex: html.html) */
+
+#add-content {
+  margin: 2rem;
+  background-color: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 5px;
+}
+
+#content-form {
+  display: flex;
+  flex-direction: column;
+}
+
+#content-form label {
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+#content-form input,
+#content-form textarea {
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+#content-form button {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+#content-form button:hover {
+  background-color: #555;
+}
+
+/* Style pour le bouton de retour à l'accueil */
+a.back-button {
+  display: inline-block;
+  margin: 1.5rem 0;
+  padding: 0.75rem 1.5rem;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+a.back-button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+a.back-button:active {
+  background-color: #003f7f;
+}
+
+/* Style pour les sections de contenu */
+main {
+  padding: 2rem;
+}
+
+section {
+  margin-bottom: 2rem;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 5px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 0.5rem;
+  color: #444;
+}
+
+pre {
+  background-color: #f5f5f5;
+  padding: 1rem;
+  border-radius: 5px;
+  font-family: "Courier New", monospace;
+}
+
+code {
+  color: #d63384;
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  header p {
+    font-size: 0.9rem;
+  }
+  h2 {
+    font-size: 1.3rem;
+  }
+}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module de Login</title>
+    <link rel="stylesheet" href="./login.css">
+    <link rel="shortcut icon" href="./assets/images/Favicon.ico" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="auth-container">
+        <div class="login" id="login-form">
+            <img src="./assets/images/SEO2.webp" alt="Image poste de travail" class="login__img">
+
+            <form action="" class="login__form">
+                <h1 class="login__title">Login</h1>
+
+                <div class="login__content">
+                    <div class="login__box">
+                        <i class="ri-user-3-line login__icon"></i>
+
+                        <div class="login__box-input">
+                            <input type="email" required class="login__input" id="login-email" placeholder=" ">
+                            <label for="login-email" class="login__label">Email</label>
+                        </div>
+                    </div>
+
+                    <div class="login__box">
+                        <i class="ri-lock-2-line login__icon"></i>
+
+                        <div class="login__box-input">
+                            <input type="password" required class="login__input" id="login-pass" placeholder=" ">
+                            <label for="login-pass" class="login__label">Password</label>
+                            <i class="ri-eye-off-line login__eye" id="login-eye"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="login__check">
+                    <div class="login__check-group">
+                        <input type="checkbox" class="login__check-input" id="login-remember">
+                        <label for="login-remember" class="login__check-label">se souvenir</label>
+                    </div>
+
+                    <a href="#" class="login__forgot">Mot de passe oublié?</a>
+                </div>
+
+                <button class="login__button">Login</button>
+
+                <p>
+                    Vous n’avez pas de compte?
+                </p>
+                <div class="login__register">
+                    <a href="#" id="show-register">S'inscrire</a>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="register hidden" id="register-form">
+            <img src="./assets/images/SEO2.webp" alt="Image poste de travail" class="register__img">
+
+            <form action="" class="register__form">
+                <h1 class="register__title">S'inscrire</h1>
+
+                <div class="register__content">
+                    <div class="register__box">
+                        <i class="ri-user-3-line register__icon"></i>
+
+                        <div class="register__box-input">
+                            <input type="email" required class="register__input" id="register-email" placeholder=" ">
+                            <label for="register-email" class="register__label">Email</label>
+                        </div>
+                    </div>
+
+                    <div class="register__box">
+                        <i class="ri-lock-2-line register__icon"></i>
+
+                        <div class="register__box-input">
+                            <input type="password" required class="register__input" id="register-pass" placeholder=" ">
+                            <label for="register-pass" class="register__label">Password</label>
+                            <i class="ri-eye-off-line register__eye" id="register-eye"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="register__button">S'inscrire</button>
+                <div class="register__login">
+                    <a href="#" id="show-login">Se connecter</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="./firebase-config.js"></script>
+    <script src="./login.js"></script>
+</body>
+
+</html>

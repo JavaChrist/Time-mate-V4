@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TimeMate - Calendrier</title>
+  <link rel="stylesheet" href="main.css" />
+  <link rel="shortcut icon" href="/assets/images/Favicon.ico" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+</head>
+
+<body>
+  <header>
+    <h1>TimeMate - Calendrier</h1>
+    <div class="week-navigation">
+      <button id="previous-week">Semaine précédente</button>
+      <a href="#" id="logout-button">Déconnexion</a>
+      <button id="next-week">Semaine suivante</button>
+    </div>
+    <div class="header-container">
+      <div id="week-number" class="week-number"></div>
+      <button onclick="location.href='activites.html'">Retour au tableau</button>
+    </div>
+  </header>
+
+  <div class="calendar-container">
+    <div class="calendar-header">
+      <div class="calendar-day monday">
+        <span class="day-title">Lundi</span>
+
+      </div>
+      <div class="calendar-day tuesday">
+        <span class="day-title">Mardi</span>
+        <span class="date-display"></span>
+      </div>
+      <div class="calendar-day wednesday">
+        <span class="day-title">Mercredi</span>
+        <span class="date-display"></span>
+      </div>
+      <div class="calendar-day thursday">
+        <span class="day-title">Jeudi</span>
+        <span class="date-display"></span>
+      </div>
+      <div class="calendar-day friday">
+        <span class="day-title">Vendredi</span>
+        <span class="date-display"></span>
+      </div>
+      <div class="calendar-day saturday">
+        <span class="day-title">Samedi</span>
+        <span class="date-display"></span>
+      </div>
+      <div class="calendar-day sunday">
+        <span class="day-title">Dimanche</span>
+        <span class="date-display"></span>
+      </div>
+    </div>
+    <div class="calendar-body">
+      <div class="calendar-day-body" id="monday"></div>
+      <div class="calendar-day-body" id="tuesday"></div>
+      <div class="calendar-day-body" id="wednesday"></div>
+      <div class="calendar-day-body" id="thursday"></div>
+      <div class="calendar-day-body" id="friday"></div>
+      <div class="calendar-day-body" id="saturday"></div>
+      <div class="calendar-day-body" id="sunday"></div>
+    </div>
+  </div>
+
+  <button id="openModal">Ajouter une activité</button>
+
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Nouvelle activité</h2>
+      <label for="activity-name">Nom de l'activité :</label>
+      <input type="text" id="activity-name" list="activity-names" placeholder="Entrez un nom" autocomplete="on" />
+      <datalist id="activity-names">
+        <!-- Les options seront ajoutées dynamiquement -->
+      </datalist>
+
+      <div class="date-time-container">
+        <div class="time-container">
+          <label for="activity-time-start">Heure de début :</label>
+          <input type="time" id="activity-time-start" />
+          <label for="activity-time-end">Heure de fin :</label>
+          <input type="time" id="activity-time-end" />
+        </div>
+        <div class="date-container">
+          <label for="activity-start-date">Date de début :</label>
+          <input type="date" id="activity-start-date" placeholder="jj/mm/aaaa" onkeydown="return false;" />
+          <label for="activity-end-date">Date de fin :</label>
+          <input type="date" id="activity-end-date" placeholder="jj/mm/aaaa" onkeydown="return false;" />
+        </div>
+      </div>
+
+      <label for="activity-color">Couleur :</label>
+      <select id="activity-color">
+        <option value="red">&#9632; Rouge</option>
+        <option value="green">&#9632; Vert</option>
+        <option value="blue">&#9632; Bleu</option>
+        <option value="yellow">&#9632; Jaune</option>
+        <option value="purple">&#9632; Violet</option>
+        <option value="orange">&#9632; Orange</option>
+        <option value="pink">&#9632; Rose</option>
+        <option value="brown">&#9632; Marron</option>
+        <option value="gray">&#9632; Gris</option>
+        <option value="black">&#9632; Noir</option>
+        <option value="teal">&#9632; Turquoise</option>
+        <option value="navy">&#9632; Bleu marine</option>
+        <option value="olive">&#9632; Olive</option>
+        <option value="lime">&#9632; Citron vert</option>
+        <option value="magenta">&#9632; Magenta</option>
+      </select>
+
+      <label for="activity-realized-time">Temps passé (en heures) :</label>
+      <input type="number" id="activity-realized-time" min="0" step="0.01" placeholder="0.00" />
+
+      <button id="save-event">Enregistrer</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+
+  <!-- Scripts Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="./firebase-config.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activités et Temps Réel - TimeMate</title>
+  <link rel="stylesheet" href="main.css">
+  <link rel="shortcut icon" href="/assets/images/Favicon.ico" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+</head>
+
+<body>
+  <header>
+    <h1>Tableau des Activités</h1>
+  </header>
+
+  <!-- Bouton Réinitialiser -->
+  <div class="button-container">
+    <button class="reset-button" id="reset-button" aria-label="Réinitialiser le tableau">Supprimer la séléction</button>
+
+    <button class="back-button" onclick="location.href='app.html'">Retour au calendrier</button>
+  </div>
+
+  <!-- Tableau des activités -->
+  <table id="activities-log">
+    <thead>
+      <tr>
+        <th style="width: 5%;">Sélection</th>
+        <th style="width: 55%;">Nom de l'activité</th>
+        <th style="width: 13.33%;">Heures prévues</th>
+        <th style="width: 13.33%;">Heures réalisées</th>
+        <th style="width: 13.33%;">Temps restant</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Les activités seront ajoutées ici par JavaScript -->
+    </tbody>
+  </table>
+
+  <!-- Commentez ou supprimez le bouton si vous ne voulez plus de fonctionnalité de purge -->
+  <!-- <button id="purge-log-button">Purger le journal des activités</button> -->
+  <script>
+    // Commentez ou supprimez tout appel à cette fonction
+    // document.getElementById('purge-log-button').addEventListener('click', purgeActivityLog);
+  </script>
+
+  <script src="activites.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
