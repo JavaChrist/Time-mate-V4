@@ -67,3 +67,52 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
+
+// Fonction pour exporter en Excel
+function exportToExcel() {
+  try {
+    // Récupérer le tableau par son ID
+    const table = document.getElementById('activities-log');
+    if (!table) {
+      throw new Error("Le tableau n'a pas été trouvé");
+    }
+
+    // Créer un classeur Excel
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.table_to_sheet(table);
+
+    // Ajouter la feuille au classeur
+    XLSX.utils.book_append_sheet(wb, ws, "Activités");
+
+    // Générer et télécharger le fichier
+    XLSX.writeFile(wb, "activites.xlsx");
+  } catch (error) {
+    console.error("Erreur lors de l'export Excel:", error);
+    alert("Une erreur est survenue lors de l'export Excel");
+  }
+}
+
+// Fonction pour exporter en PDF
+function exportToPDF() {
+  try {
+    const { jsPDF } = window.jspdf;
+    const table = document.getElementById('activities-log');
+
+    if (!table) {
+      throw new Error("Le tableau n'a pas été trouvé");
+    }
+
+    html2canvas(table).then(canvas => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save('activites.pdf');
+    });
+  } catch (error) {
+    console.error("Erreur lors de l'export PDF:", error);
+    alert("Une erreur est survenue lors de l'export PDF");
+  }
+}

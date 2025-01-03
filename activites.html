@@ -8,6 +8,20 @@
   <link rel="stylesheet" href="main.css">
   <link rel="shortcut icon" href="/assets/images/Favicon.ico" type="image/x-icon">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Scripts Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <!-- Autres scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 </head>
 
 <body>
@@ -38,15 +52,19 @@
     </tbody>
   </table>
 
-  <!-- Commentez ou supprimez le bouton si vous ne voulez plus de fonctionnalité de purge -->
-  <!-- <button id="purge-log-button">Purger le journal des activités</button> -->
-  <script>
-    // Commentez ou supprimez tout appel à cette fonction
-    // document.getElementById('purge-log-button').addEventListener('click', purgeActivityLog);
-  </script>
 
-  <script src="activites.js"></script>
-  <script src="app.js"></script>
+  <div class="export-buttons">
+    <button onclick="exportToExcel()" class="export-btn excel-btn">
+      <i class="fas fa-file-excel"></i> Exporter en Excel
+    </button>
+    <button onclick="exportToPDF()" class="export-btn pdf-btn">
+      <i class="fas fa-file-pdf"></i> Exporter en PDF
+    </button>
+  </div>
+
+    <!-- Vos scripts -->
+    <script src="activites.js"></script>
+    <script src="app.js"></script>
 </body>
 
 </html>

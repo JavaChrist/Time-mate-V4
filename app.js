@@ -10,16 +10,19 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Gestion du bouton de déconnexion
-    document.getElementById('logout-button').addEventListener('click', (e) => {
-        e.preventDefault();
-        isIntentionalLogout = true;
-        firebase.auth().signOut().then(() => {
-            window.location.href = './index.html';
-        }).catch((error) => {
-            console.error('Erreur lors de la déconnexion:', error);
-            isIntentionalLogout = false;
+    const logoutButton = document.getElementById('logout-button');
+    if (logoutButton) {  // Vérifier si le bouton existe
+        logoutButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            isIntentionalLogout = true;
+            firebase.auth().signOut().then(() => {
+                window.location.href = './index.html';
+            }).catch((error) => {
+                console.error('Erreur lors de la déconnexion:', error);
+                isIntentionalLogout = false;
+            });
         });
-    });
+    }
 
     // Déconnexion automatique uniquement lors de la fermeture de la fenêtre
     window.addEventListener('unload', () => {

@@ -624,3 +624,45 @@ th {
 .time-inputs span {
   color: #666;
 }
+
+/* Styles pour les boutons d'export */
+.export-buttons {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+}
+
+.export-buttons .export-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  box-shadow: 0 0 10px rgba(79, 5, 5, 0.433);
+}
+
+.export-buttons .excel-btn {
+  background-color: #217346 !important; /* Vert Excel */
+}
+
+.export-buttons .excel-btn:hover {
+  background-color: #1a5c38 !important;
+}
+
+.export-buttons .pdf-btn {
+  background-color: #ff0000 !important; /* Rouge */
+}
+
+.export-buttons .pdf-btn:hover {
+  background-color: #cc0000 !important;
+}
+
+/* Style pour les icônes dans les boutons d'export */
+.export-buttons .export-btn i {
+  font-size: 16px;
+}
