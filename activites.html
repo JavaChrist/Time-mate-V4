@@ -17,11 +17,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js"></script>
-  <!-- Autres scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
 </head>
 
 <body>
@@ -32,7 +27,6 @@
   <!-- Bouton Réinitialiser -->
   <div class="button-container">
     <button class="reset-button" id="reset-button" aria-label="Réinitialiser le tableau">Supprimer la séléction</button>
-
     <button class="back-button" onclick="location.href='app.html'">Retour au calendrier</button>
   </div>
 
@@ -52,7 +46,7 @@
     </tbody>
   </table>
 
-
+  <!-- Boutons d'export -->
   <div class="export-buttons">
     <button onclick="exportToExcel()" class="export-btn excel-btn">
       <i class="fas fa-file-excel"></i> Exporter en Excel
@@ -62,9 +56,9 @@
     </button>
   </div>
 
-    <!-- Vos scripts -->
-    <script src="activites.js"></script>
-    <script src="app.js"></script>
+  <!-- Scripts -->
+  <script src="activites.js"></script>
+
 </body>
 
 </html>

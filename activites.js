@@ -1,4 +1,25 @@
 document.addEventListener('DOMContentLoaded', function () {
+  let isIntentionalLogout = false;
+  let isIntentionalNavigation = false;
+
+  // Gestion du bouton "Retour au calendrier"
+  const backButton = document.querySelector('.back-button');
+  if (backButton) {
+    backButton.onclick = function (e) {
+      e.preventDefault();
+      isIntentionalNavigation = true;
+      window.location.href = 'app.html';
+    };
+  }
+
+  // Modifier l'événement beforeunload
+  window.addEventListener('beforeunload', (event) => {
+    if (!isIntentionalLogout && !isIntentionalNavigation) {
+      event.preventDefault();
+      event.returnValue = '';
+    }
+  });
+
   // Met à jour le tableau des activités en utilisant les données de localStorage
   const updateActivitiesTable = () => {
     const activities = JSON.parse(localStorage.getItem('activities')) || [];

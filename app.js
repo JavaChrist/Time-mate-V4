@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     let isIntentionalLogout = false;
+    let isIntentionalNavigation = false;
 
     // Vérification de l'authentification
     firebase.auth().onAuthStateChanged((user) => {
@@ -11,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Gestion du bouton de déconnexion
     const logoutButton = document.getElementById('logout-button');
-    if (logoutButton) {  // Vérifier si le bouton existe
+    if (logoutButton) {
         logoutButton.addEventListener('click', (e) => {
             e.preventDefault();
             isIntentionalLogout = true;
@@ -24,10 +25,21 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Déconnexion automatique uniquement lors de la fermeture de la fenêtre
-    window.addEventListener('unload', () => {
-        if (!isIntentionalLogout) {
-            firebase.auth().signOut();
+    // Gestion du bouton "Retour au tableau"
+    const backButton = document.querySelector('button[onclick="location.href=\'activites.html\'"]');
+    if (backButton) {
+        backButton.onclick = function (e) {
+            e.preventDefault();
+            isIntentionalNavigation = true;
+            window.location.href = 'activites.html';
+        };
+    }
+
+    // Modifier l'événement beforeunload
+    window.addEventListener('beforeunload', (event) => {
+        if (!isIntentionalLogout && !isIntentionalNavigation) {
+            event.preventDefault();
+            event.returnValue = '';
         }
     });
 
@@ -61,14 +73,41 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Réinitialiser les champs de la modale
         function resetModalFields() {
+            // Réinitialisation du nom
             document.getElementById('activity-name').value = '';
-            document.getElementById('activity-time-start').value = '';
-            document.getElementById('activity-time-end').value = '';
+
+            // Réinitialisation des horaires
+            document.getElementById('activity-time-start-1').value = '';
+            document.getElementById('activity-time-end-1').value = '';
+            document.getElementById('activity-time-start-2').value = '';
+            document.getElementById('activity-time-end-2').value = '';
+
+            // Réinitialisation des dates
             document.getElementById('activity-start-date').value = '';
             document.getElementById('activity-end-date').value = '';
+
+            // Réinitialisation des autres champs
             document.getElementById('activity-color').value = 'red';
             document.getElementById('activity-realized-time').value = '';
-            document.getElementById('save-event').removeAttribute('data-activity-id');
+
+            // Réactiver tous les champs qui pourraient avoir été désactivés
+            document.getElementById('activity-name').disabled = false;
+            document.getElementById('activity-start-date').disabled = false;
+            document.getElementById('activity-end-date').disabled = false;
+            document.getElementById('activity-time-start-2').disabled = false;
+            document.getElementById('activity-time-end-2').disabled = false;
+
+            // Supprimer les attributs data
+            const saveButton = document.getElementById('save-event');
+            if (saveButton) {
+                saveButton.removeAttribute('data-activity-id');
+                saveButton.removeAttribute('data-activity-date');
+            }
+
+            const datePicker = document.getElementById('activity-dates')._flatpickr;
+            if (datePicker) {
+                datePicker.clear();
+            }
         }
 
         // Ouvrir une activité existante pour modification
@@ -78,28 +117,59 @@ document.addEventListener('DOMContentLoaded', function () {
             const detail = activity?.activitiesDetails.find(d => d.date === date);
 
             if (activity && detail) {
-                document.getElementById('activity-name').value = activity.activityName;
-                document.getElementById('activity-name').disabled = true;
-                document.getElementById('activity-time-start-1').value = detail.startTime;
-                document.getElementById('activity-time-end-1').value = detail.endTime;
-                document.getElementById('activity-start-date').value = date;
-                document.getElementById('activity-start-date').disabled = true;
-                document.getElementById('activity-end-date').value = date;
-                document.getElementById('activity-end-date').disabled = true;
-                document.getElementById('activity-color').value = detail.color;
-                document.getElementById('activity-color').disabled = true;
-                document.getElementById('activity-realized-time').value = '';
-
-                // Réinitialiser les champs de la deuxième plage horaire
-                document.getElementById('activity-time-start-2').value = '';
-                document.getElementById('activity-time-end-2').value = '';
-                document.getElementById('activity-time-start-2').disabled = true;
-                document.getElementById('activity-time-end-2').disabled = true;
-
-                document.getElementById('save-event').setAttribute('data-activity-id', activityId);
-                document.getElementById('save-event').setAttribute('data-activity-date', date);
-
                 const modal = document.getElementById('modal');
+                if (!modal) return; // Vérification de l'existence de la modale
+
+                // Vérifier et définir les valeurs seulement si les éléments existent
+                const elements = {
+                    'activity-name': activity.activityName,
+                    'activity-time-start-1': detail.startTime,
+                    'activity-time-end-1': detail.endTime,
+                    'activity-color': detail.color,
+                    'activity-realized-time': ''
+                };
+
+                // Mettre à jour les champs s'ils existent
+                Object.entries(elements).forEach(([id, value]) => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.value = value;
+                        if (id === 'activity-name') {
+                            element.disabled = true;
+                        }
+                    }
+                });
+
+                // Gérer les dates avec Flatpickr
+                const datePicker = document.getElementById('activity-dates')._flatpickr;
+                if (datePicker) {
+                    datePicker.setDate(date);
+                    datePicker.config.disable = []; // Réinitialiser les dates désactivées
+                }
+
+                // Désactiver les champs qui ne doivent pas être modifiés
+                const fieldsToDisable = [
+                    'activity-name',
+                    'activity-color',
+                    'activity-time-start-2',
+                    'activity-time-end-2'
+                ];
+
+                fieldsToDisable.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.disabled = true;
+                    }
+                });
+
+                // Définir les attributs data pour le bouton de sauvegarde
+                const saveButton = document.getElementById('save-event');
+                if (saveButton) {
+                    saveButton.setAttribute('data-activity-id', activityId);
+                    saveButton.setAttribute('data-activity-date', date);
+                }
+
+                // Afficher la modale
                 modal.style.display = 'block';
             }
         }
@@ -176,30 +246,35 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('activity-time-end-1').value,
                 document.getElementById('activity-time-end-2').value
             ];
-            const startDateValue = document.getElementById('activity-start-date').value;
-            const endDateValue = document.getElementById('activity-end-date').value;
+            const startDateValue = document.getElementById('activity-start-date')?.value;
+            const endDateValue = document.getElementById('activity-end-date')?.value;
             const color = document.getElementById('activity-color').value;
             const realizedTime = parseFloat(document.getElementById('activity-realized-time').value) || 0;
 
-            // Vérification des champs requis
+            // Si c'est une modification d'activité existante
+            if (activityId) {
+                const date = saveEventButton.getAttribute('data-activity-date');
+                if (date && startTimes[0] && endTimes[0]) {
+                    updateActivityDetail(activityId, date, startTimes[0], endTimes[0], realizedTime, color);
+                    modal.style.display = 'none';
+                    resetModalFields();
+                    return;
+                }
+            }
+
+            // Si c'est une nouvelle activité
             if (!activityName || !startDateValue || !startTimes.some((time, index) => time && endTimes[index])) {
                 alert('Veuillez remplir au moins le nom et une plage horaire complète.');
                 return;
             }
 
             const startDate = new Date(startDateValue);
-
-            if (activityId) {
-                updateActivityDetail(activityId, startDateValue, startTimes[0], endTimes[0], realizedTime, color);
-            } else {
-                saveNewActivity(activityName, startDate, endDateValue, startTimes, endTimes, color, realizedTime);
-            }
+            saveNewActivity(activityName, startDate, endDateValue, startTimes, endTimes, color, realizedTime);
 
             loadActivitiesFromStorage(currentViewDate);
             updateActivitiesTable();
             updateActivityNamesList();
             modal.style.display = 'none';
-            document.getElementById('activity-realized-time').value = '';
             resetModalFields();
         });
 
@@ -224,41 +299,37 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Calculer le total des heures réalisées pour ce détail
                     const totalRealizedForDetail = (parseFloat(oldDetail.realizedTime || 0) + newRealizedTime).toFixed(2);
 
-                    // Important : Mettre d'abord à jour les heures réalisées totales
+                    // Mettre à jour les heures réalisées totales de l'activité
                     activity.realizedHours = (parseFloat(activity.realizedHours || 0) + newRealizedTime).toFixed(2);
 
-                    // Sauvegarder la mise à jour des heures réalisées
-                    activities[activityIndex] = activity;
-                    localStorage.setItem('activities', JSON.stringify(activities));
-
-                    // Ensuite, vérifier si ce détail spécifique est terminé
+                    // Vérifier si ce détail spécifique est terminé
                     if (parseFloat(totalRealizedForDetail) >= parseFloat(plannedHours)) {
                         // Supprimer uniquement ce détail du calendrier
                         activity.activitiesDetails.splice(detailIndex, 1);
-
-                        // Sauvegarder après la suppression du détail
-                        localStorage.setItem('activities', JSON.stringify(activities));
-
-                        // Fermer la modale
-                        const modal = document.getElementById('modal');
-                        modal.style.display = 'none';
                     } else {
                         // Mettre à jour les heures réalisées pour ce détail
                         activity.activitiesDetails[detailIndex] = {
                             ...oldDetail,
                             realizedTime: totalRealizedForDetail
                         };
-
-                        // Sauvegarder la mise à jour du détail
-                        localStorage.setItem('activities', JSON.stringify(activities));
                     }
 
-                    // Vider le champ des heures réalisées
+                    // Sauvegarder les modifications
+                    activities[activityIndex] = activity;
+                    localStorage.setItem('activities', JSON.stringify(activities));
+
+                    // Fermer la modale
+                    const modal = document.getElementById('modal');
+                    if (modal) {
+                        modal.style.display = 'none';
+                    }
+
+                    // Réinitialiser le champ des heures réalisées
                     document.getElementById('activity-realized-time').value = '';
 
                     // Mettre à jour l'affichage
-                    updateActivitiesTable();
                     loadActivitiesFromStorage(currentViewDate);
+                    updateActivitiesTable();
                 }
             }
         }
@@ -267,6 +338,11 @@ document.addEventListener('DOMContentLoaded', function () {
         function saveNewActivity(activityName, startDate, endDateValue, startTimes, endTimes, color, realizedTime) {
             const activities = JSON.parse(localStorage.getItem('activities')) || [];
             const endDate = new Date(endDateValue);
+
+            // Régler les heures à midi pour éviter les problèmes de fuseau horaire
+            startDate.setHours(12, 0, 0, 0);
+            endDate.setHours(12, 0, 0, 0);
+
             const dayDifference = Math.round((endDate - startDate) / (1000 * 3600 * 24));
 
             // Calculer les heures prévues totales pour toutes les plages
@@ -530,7 +606,11 @@ document.addEventListener('DOMContentLoaded', function () {
             endOfWeek.setDate(startOfWeek.getDate() + 6);
             endOfWeek.setHours(23, 59, 59, 999);
 
-            return activityDate >= startOfWeek && activityDate <= endOfWeek;
+            // Créer une nouvelle date avec l'heure à midi
+            const compareDate = new Date(activityDate);
+            compareDate.setHours(12, 0, 0, 0);
+
+            return compareDate >= startOfWeek && compareDate <= endOfWeek;
         }
 
         const nextWeekButton = document.getElementById('next-week');
@@ -647,5 +727,52 @@ document.addEventListener('DOMContentLoaded', function () {
                 namesContainer.style.display = 'block';
             });
         }
+
+        // Initialiser Flatpickr
+        const datePicker = flatpickr("#activity-dates", {
+            mode: "multiple",
+            dateFormat: "d/m",
+            locale: "fr",
+            minDate: "today",
+            weekNumbers: true,
+            shorthandCurrentMonth: true,
+            showMonths: 1,
+            altInput: true,
+            altFormat: "d/m",
+            onChange: function (selectedDates) {
+                if (selectedDates.length > 0) {
+                    selectedDates.sort((a, b) => a - b);
+
+                    // Ajuster les dates pour éviter le décalage de fuseau horaire
+                    const startDate = new Date(selectedDates[0]);
+                    const endDate = new Date(selectedDates[selectedDates.length - 1]);
+
+                    // Régler l'heure à midi pour éviter les problèmes de fuseau horaire
+                    startDate.setHours(12, 0, 0, 0);
+                    endDate.setHours(12, 0, 0, 0);
+
+                    let startDateInput = document.getElementById('activity-start-date');
+                    let endDateInput = document.getElementById('activity-end-date');
+
+                    if (!startDateInput) {
+                        startDateInput = document.createElement('input');
+                        startDateInput.type = 'hidden';
+                        startDateInput.id = 'activity-start-date';
+                        document.getElementById('activity-form').appendChild(startDateInput);
+                    }
+
+                    if (!endDateInput) {
+                        endDateInput = document.createElement('input');
+                        endDateInput.type = 'hidden';
+                        endDateInput.id = 'activity-end-date';
+                        document.getElementById('activity-form').appendChild(endDateInput);
+                    }
+
+                    // Format YYYY-MM-DD avec gestion du fuseau horaire
+                    startDateInput.value = startDate.toISOString().split('T')[0];
+                    endDateInput.value = endDate.toISOString().split('T')[0];
+                }
+            }
+        });
     }
 });
