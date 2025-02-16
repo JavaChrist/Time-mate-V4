@@ -1,11 +1,16 @@
 document.addEventListener('DOMContentLoaded', function () {
     let isIntentionalLogout = false;
     let isIntentionalNavigation = false;
+    const resetButton = document.getElementById('reset-button');
+    if (resetButton) {
+        resetButton.addEventListener('click', resetModalFields);
+    }
 
     // Vérification de l'authentification
     firebase.auth().onAuthStateChanged((user) => {
-        if (!user && !isIntentionalLogout) {
-            window.location.href = './index.html';
+        if (!user) {
+            // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
+            window.location.replace('./index.html');
             return;
         }
     });
@@ -73,38 +78,41 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Réinitialiser les champs de la modale
         function resetModalFields() {
-            // Réinitialisation du nom
-            document.getElementById('activity-name').value = '';
+            const fieldsToReset = [
+                'activity-name',
+                'activity-time-start-1',
+                'activity-time-end-1',
+                'activity-time-start-2',
+                'activity-time-end-2',
+                'activity-start-date',
+                'activity-end-date',
+                'activity-color',
+                'activity-realized-time'
+            ];
 
-            // Réinitialisation des horaires
-            document.getElementById('activity-time-start-1').value = '';
-            document.getElementById('activity-time-end-1').value = '';
-            document.getElementById('activity-time-start-2').value = '';
-            document.getElementById('activity-time-end-2').value = '';
+            fieldsToReset.forEach(fieldId => {
+                const element = document.getElementById(fieldId);
+                if (element) {
+                    // Réinitialiser la valeur en fonction du type de champ
+                    if (fieldId === 'activity-color') {
+                        element.value = '#ff0000';
+                    } else {
+                        element.value = '';
+                    }
+                    // Réactiver le champ si nécessaire
+                    element.disabled = false;
+                }
+            });
 
-            // Réinitialisation des dates
-            document.getElementById('activity-start-date').value = '';
-            document.getElementById('activity-end-date').value = '';
-
-            // Réinitialisation des autres champs
-            document.getElementById('activity-color').value = 'red';
-            document.getElementById('activity-realized-time').value = '';
-
-            // Réactiver tous les champs qui pourraient avoir été désactivés
-            document.getElementById('activity-name').disabled = false;
-            document.getElementById('activity-start-date').disabled = false;
-            document.getElementById('activity-end-date').disabled = false;
-            document.getElementById('activity-time-start-2').disabled = false;
-            document.getElementById('activity-time-end-2').disabled = false;
-
-            // Supprimer les attributs data
+            // Gérer le bouton de sauvegarde
             const saveButton = document.getElementById('save-event');
             if (saveButton) {
                 saveButton.removeAttribute('data-activity-id');
                 saveButton.removeAttribute('data-activity-date');
             }
 
-            const datePicker = document.getElementById('activity-dates')._flatpickr;
+            // Gérer Flatpickr si présent
+            const datePicker = document.getElementById('activity-dates')?._flatpickr;
             if (datePicker) {
                 datePicker.clear();
             }

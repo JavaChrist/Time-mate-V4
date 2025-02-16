@@ -37,7 +37,7 @@ button:hover {
 
 /* En-tête */
 header {
-  background-color: #333;
+  background-color: #7e7c7c;
   color: #fff;
   padding: 1.5rem;
   text-align: center;
@@ -50,7 +50,7 @@ header {
   align-items: center;
   margin-bottom: 20px;
   width: 100%;
-  background-color: #333;
+  background-color: #7e7c7c;
 }
 
 /* Navigation des semaines */
@@ -276,17 +276,17 @@ button[type="submit"]:hover {
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6); /* Fond noir transparent */
+  background-color: rgba(16, 15, 15, 0.689); /* Fond noir transparent */
 }
 
 .modal-content {
-  background-color: #766be775;
+  background-color: hsla(0, 0%, 10%, 0.1) ;
   padding: 20px;
   width: 80%;
   max-width: 600px;
   border-radius: 10px;
   text-align: center;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 20px rgba(5, 4, 4, 0.3);
   position: relative;
   margin: 50px auto;
 }
@@ -586,7 +586,7 @@ th {
   padding: 8px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: left;
   cursor: pointer;
   border-bottom: 1px solid #eee;
 }
@@ -597,6 +597,7 @@ th {
 
 .name-text {
   flex: 1;
+  text-align: left;
 }
 
 .delete-name-button {

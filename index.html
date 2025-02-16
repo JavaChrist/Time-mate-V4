@@ -21,7 +21,6 @@
                 <div class="login__content">
                     <div class="login__box">
                         <i class="ri-user-3-line login__icon"></i>
-
                         <div class="login__box-input">
                             <input type="email" required class="login__input" id="login-email" placeholder=" ">
                             <label for="login-email" class="login__label">Email</label>
@@ -30,10 +29,9 @@
 
                     <div class="login__box">
                         <i class="ri-lock-2-line login__icon"></i>
-
                         <div class="login__box-input">
-                            <input type="password" required class="login__input" id="login-pass" placeholder=" ">
-                            <label for="login-pass" class="login__label">Password</label>
+                            <input type="password" required class="login__input" id="login-password" placeholder=" ">
+                            <label for="login-password" class="login__label">Password</label>
                             <i class="ri-eye-off-line login__eye" id="login-eye"></i>
                         </div>
                     </div>
@@ -44,14 +42,13 @@
                         <input type="checkbox" class="login__check-input" id="login-remember">
                         <label for="login-remember" class="login__check-label">se souvenir</label>
                     </div>
-
                     <a href="#" class="login__forgot">Mot de passe oublié?</a>
                 </div>
 
                 <button class="login__button">Login</button>
 
                 <p>
-                    Vous n’avez pas de compte?
+                    Vous n'avez pas de compte?
                 </p>
                 <div class="login__register">
                     <a href="#" id="show-register">S'inscrire</a>
@@ -69,7 +66,6 @@
                 <div class="register__content">
                     <div class="register__box">
                         <i class="ri-user-3-line register__icon"></i>
-
                         <div class="register__box-input">
                             <input type="email" required class="register__input" id="register-email" placeholder=" ">
                             <label for="register-email" class="register__label">Email</label>
@@ -78,10 +74,10 @@
 
                     <div class="register__box">
                         <i class="ri-lock-2-line register__icon"></i>
-
                         <div class="register__box-input">
-                            <input type="password" required class="register__input" id="register-pass" placeholder=" ">
-                            <label for="register-pass" class="register__label">Password</label>
+                            <input type="password" required class="register__input" id="register-password"
+                                placeholder=" ">
+                            <label for="register-password" class="register__label">Password</label>
                             <i class="ri-eye-off-line register__eye" id="register-eye"></i>
                         </div>
                     </div>
@@ -95,10 +91,136 @@
         </div>
     </div>
 
+    <div class="error-modal__overlay" id="errorOverlay"></div>
+    <div class="error-modal" id="errorModal">
+        <div class="error-modal__content">
+            <h2 class="error-modal__title" id="errorTitle">Erreur</h2>
+            <p class="error-modal__message" id="errorMessage"></p>
+            <button class="error-modal__button" id="errorCloseButton">Fermer</button>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="./firebase-config.js"></script>
     <script src="./login.js"></script>
+
+    <!-- Vérifier si l'utilisateur est déjà connecté -->
+    <script>
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                // Si l'utilisateur est déjà connecté, rediriger vers app.html
+                window.location.href = './app.html';
+            }
+        });
+    </script>
+
+    <!-- Remplacer le script de gestion de connexion par celui-ci -->
+    <script>
+        document.querySelector('.login__form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            firebase.auth().signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    window.location.href = './app.html';
+                })
+                .catch((error) => {
+                    console.error('Erreur de connexion:', error);
+                    showErrorModal(getErrorMessage(error.code));
+                });
+        });
+
+        // Fonction pour afficher le modal d'erreur
+        function showErrorModal(message, title = 'Erreur de connexion') {
+            const modal = document.getElementById('errorModal');
+            const overlay = document.getElementById('errorOverlay');
+            const messageElement = document.getElementById('errorMessage');
+            const titleElement = document.getElementById('errorTitle');
+
+            titleElement.textContent = title;
+            messageElement.textContent = message;
+            modal.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+
+        // Gérer la fermeture du modal
+        document.getElementById('errorCloseButton').addEventListener('click', function () {
+            const modal = document.getElementById('errorModal');
+            const overlay = document.getElementById('errorOverlay');
+
+            modal.style.display = 'none';
+            overlay.style.display = 'none';
+        });
+
+        // Fermer le modal en cliquant sur l'overlay
+        document.getElementById('errorOverlay').addEventListener('click', function () {
+            const modal = document.getElementById('errorModal');
+            const overlay = document.getElementById('errorOverlay');
+
+            modal.style.display = 'none';
+            overlay.style.display = 'none';
+        });
+
+        // Fonction pour obtenir un message d'erreur personnalisé
+        function getErrorMessage(errorCode) {
+            switch (errorCode) {
+                case 'auth/invalid-email':
+                    return 'L\'adresse email n\'est pas valide.';
+                case 'auth/user-disabled':
+                    return 'Ce compte utilisateur a été désactivé.';
+                case 'auth/user-not-found':
+                    return 'Aucun compte ne correspond à cet email.';
+                case 'auth/wrong-password':
+                    return 'Le mot de passe est incorrect.';
+                case 'auth/too-many-requests':
+                    return 'Trop de tentatives de connexion. Veuillez réessayer plus tard.';
+                case 'auth/network-request-failed':
+                    return 'Problème de connexion réseau. Vérifiez votre connexion internet.';
+                default:
+                    return 'Une erreur est survenue lors de la connexion. Veuillez réessayer.';
+            }
+        }
+    </script>
+
+    <!-- Remplacer ou ajouter ce script pour gérer l'inscription -->
+    <script>
+        document.querySelector('.register__form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    window.location.href = './app.html';
+                })
+                .catch((error) => {
+                    console.error('Erreur d\'inscription:', error);
+                    showErrorModal(getRegistrationErrorMessage(error.code), 'Erreur d\'inscription');
+                });
+        });
+
+        // Ajouter cette fonction pour les messages d'erreur d'inscription
+        function getRegistrationErrorMessage(errorCode) {
+            switch (errorCode) {
+                case 'auth/email-already-in-use':
+                    return 'Cette adresse email est déjà utilisée par un autre compte.';
+                case 'auth/invalid-email':
+                    return 'L\'adresse email n\'est pas valide.';
+                case 'auth/operation-not-allowed':
+                    return 'L\'inscription par email/mot de passe n\'est pas activée.';
+                case 'auth/weak-password':
+                    return 'Le mot de passe est trop faible. Il doit contenir au moins 6 caractères.';
+                case 'auth/network-request-failed':
+                    return 'Problème de connexion réseau. Vérifiez votre connexion internet.';
+                default:
+                    return 'Une erreur est survenue lors de l\'inscription. Veuillez réessayer.';
+            }
+        }
+    </script>
 </body>
 
 </html>
