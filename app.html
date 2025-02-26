@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>TimeMate - Calendrier</title>
   <link rel="stylesheet" href="main.css" />
   <link rel="shortcut icon" href="/assets/images/Favicon.ico" type="image/x-icon">
@@ -11,107 +11,134 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
 </head>
 
 <body>
-  <header>
-    <h1>TimeMate - Calendrier</h1>
-    <div class="week-navigation">
-      <button id="previous-week">Semaine précédente</button>
-      <a href="#" id="logout-button">Déconnexion</a>
-      <button id="next-week">Semaine suivante</button>
-    </div>
-    <div class="header-container">
-      <div id="week-number" class="week-number"></div>
-      <button onclick="location.href='activites.html'">Retour au tableau</button>
+  <header class="header">
+    <div class="header__content container">
+      <div class="header__left">
+        <h1 class="header__title">TimeMate</h1>
+        <div class="week-navigation">
+          <button id="previous-week" class="btn btn-secondary">
+            <i class="ri-arrow-left-line"></i>
+          </button>
+          <div class="week-number" id="week-number">Semaine 1</div>
+          <button id="next-week" class="btn btn-secondary">
+            <i class="ri-arrow-right-line"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bouton hamburger -->
+      <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <nav class="nav" id="nav">
+        <button id="openModal" class="btn btn-primary">
+          <i class="ri-add-line"></i>
+          Nouvelle activité
+        </button>
+        <button onclick="location.href='activites.html'" class="btn btn-primary">
+          <i class="ri-table-line"></i>
+          Voir les activités
+        </button>
+        <button id="logout-button" class="btn btn-secondary">
+          <i class="ri-logout-box-line"></i>
+          Déconnexion
+        </button>
+      </nav>
     </div>
   </header>
 
-  <div class="calendar-container">
-    <div class="calendar-header">
-      <div class="calendar-day monday">
-        <span class="day-title">Lundi</span>
-
+  <main class="container">
+    <!-- Calendrier -->
+    <div class="calendar-container">
+      <div class="calendar-header">
+        <div class="calendar-day monday">
+          <span class="day-title">Lundi</span>
+        </div>
+        <div class="calendar-day tuesday">
+          <span class="day-title">Mardi</span>
+          <span class="date-display"></span>
+        </div>
+        <div class="calendar-day wednesday">
+          <span class="day-title">Mercredi</span>
+          <span class="date-display"></span>
+        </div>
+        <div class="calendar-day thursday">
+          <span class="day-title">Jeudi</span>
+          <span class="date-display"></span>
+        </div>
+        <div class="calendar-day friday">
+          <span class="day-title">Vendredi</span>
+          <span class="date-display"></span>
+        </div>
+        <div class="calendar-day saturday">
+          <span class="day-title">Samedi</span>
+          <span class="date-display"></span>
+        </div>
+        <div class="calendar-day sunday">
+          <span class="day-title">Dimanche</span>
+          <span class="date-display"></span>
+        </div>
       </div>
-      <div class="calendar-day tuesday">
-        <span class="day-title">Mardi</span>
-        <span class="date-display"></span>
-      </div>
-      <div class="calendar-day wednesday">
-        <span class="day-title">Mercredi</span>
-        <span class="date-display"></span>
-      </div>
-      <div class="calendar-day thursday">
-        <span class="day-title">Jeudi</span>
-        <span class="date-display"></span>
-      </div>
-      <div class="calendar-day friday">
-        <span class="day-title">Vendredi</span>
-        <span class="date-display"></span>
-      </div>
-      <div class="calendar-day saturday">
-        <span class="day-title">Samedi</span>
-        <span class="date-display"></span>
-      </div>
-      <div class="calendar-day sunday">
-        <span class="day-title">Dimanche</span>
-        <span class="date-display"></span>
+      <div class="calendar-body">
+        <div class="calendar-day-body" id="monday"></div>
+        <div class="calendar-day-body" id="tuesday"></div>
+        <div class="calendar-day-body" id="wednesday"></div>
+        <div class="calendar-day-body" id="thursday"></div>
+        <div class="calendar-day-body" id="friday"></div>
+        <div class="calendar-day-body" id="saturday"></div>
+        <div class="calendar-day-body" id="sunday"></div>
       </div>
     </div>
-    <div class="calendar-body">
-      <div class="calendar-day-body" id="monday"></div>
-      <div class="calendar-day-body" id="tuesday"></div>
-      <div class="calendar-day-body" id="wednesday"></div>
-      <div class="calendar-day-body" id="thursday"></div>
-      <div class="calendar-day-body" id="friday"></div>
-      <div class="calendar-day-body" id="saturday"></div>
-      <div class="calendar-day-body" id="sunday"></div>
-    </div>
-  </div>
 
-  <button id="openModal">Ajouter une activité</button>
-
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Ajouter/Modifier une activité</h2>
-      <form id="activity-form">
-        <div class="form-group">
-          <label for="activity-name">Nom de l'activité :</label>
-          <input type="text" id="activity-name" required>
-        </div>
-        <div class="form-group">
-          <label for="activity-color">Couleur :</label>
-          <input type="color" id="activity-color" value="#3498db">
-        </div>
-        <div class="form-group">
-          <label for="activity-dates">Dates :</label>
-          <input type="text" id="activity-dates" placeholder="Sélectionnez vos dates" required>
-        </div>
-        <div class="form-group">
-          <label>Plage horaire 1 :</label>
-          <div class="time-inputs">
-            <input type="time" id="activity-time-start-1" class="activity-time-start">
-            <span>à</span>
-            <input type="time" id="activity-time-end-1" class="activity-time-end">
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Ajouter/Modifier une activité</h2>
+        <form id="activity-form">
+          <div class="form-group">
+            <label for="activity-name">Nom de l'activité :</label>
+            <input type="text" id="activity-name" required>
           </div>
-        </div>
-        <div class="form-group">
-          <label>Plage horaire 2 :</label>
-          <div class="time-inputs">
-            <input type="time" id="activity-time-start-2" class="activity-time-start">
-            <span>à</span>
-            <input type="time" id="activity-time-end-2" class="activity-time-end">
+          <div class="form-group">
+            <label for="activity-color">Couleur :</label>
+            <input type="color" id="activity-color" value="#3498db">
           </div>
-        </div>
-        <div class="form-group">
-          <label for="activity-realized-time">Temps passé (en heures) :</label>
-          <input type="number" id="activity-realized-time" step="0.25" min="0">
-        </div>
-        <button type="button" id="save-event">Enregistrer</button>
-      </form>
+          <div class="form-group">
+            <label for="activity-dates">Dates :</label>
+            <input type="text" id="activity-dates" placeholder="Sélectionnez vos dates" required>
+          </div>
+          <div class="form-group">
+            <label>Plage horaire 1 :</label>
+            <div class="time-inputs">
+              <input type="time" id="activity-time-start-1" class="activity-time-start">
+              <span>à</span>
+              <input type="time" id="activity-time-end-1" class="activity-time-end">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Plage horaire 2 :</label>
+            <div class="time-inputs">
+              <input type="time" id="activity-time-start-2" class="activity-time-start">
+              <span>à</span>
+              <input type="time" id="activity-time-end-2" class="activity-time-end">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="activity-realized-time">Temps passé (en heures) :</label>
+            <input type="number" id="activity-realized-time" step="0.25" min="0">
+          </div>
+          <button type="button" id="save-event">Enregistrer</button>
+        </form>
+      </div>
     </div>
-  </div>
+  </main>
 
   <script src="app.js"></script>
 

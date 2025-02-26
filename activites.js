@@ -12,13 +12,13 @@ document.addEventListener('DOMContentLoaded', function () {
     };
   }
 
-  // Modifier l'événement beforeunload
-  window.addEventListener('beforeunload', (event) => {
-    if (!isIntentionalLogout && !isIntentionalNavigation) {
-      event.preventDefault();
-      event.returnValue = '';
-    }
-  });
+  // Supprimer l'événement beforeunload pour éviter l'alerte
+  // window.addEventListener('beforeunload', (event) => {
+  //     if (!isIntentionalLogout && !isIntentionalNavigation) {
+  //         event.preventDefault();
+  //         event.returnValue = '';
+  //     }
+  // });
 
   // Met à jour le tableau des activités en utilisant les données de localStorage
   const updateActivitiesTable = () => {
@@ -87,6 +87,19 @@ document.addEventListener('DOMContentLoaded', function () {
       updateActivitiesTable();
     }
   });
+
+  const logoutButton = document.getElementById('logout-button');
+  if (logoutButton) {
+    logoutButton.addEventListener('click', function (e) {
+      e.preventDefault();
+      firebase.auth().signOut().then(() => {
+        // Rediriger vers la page de connexion après la déconnexion
+        window.location.href = './index.html';
+      }).catch((error) => {
+        console.error('Erreur lors de la déconnexion:', error);
+      });
+    });
+  }
 });
 
 // Fonction pour exporter en Excel

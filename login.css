@@ -5,17 +5,29 @@
   --black-color: hsl(0, 0%, 0%);
 
   --body-font: "Poppins", sans-serif;
-  --h1-font-size: 1.75rem;
-  --normal-font-size: 1rem;
-  --small-font-size: 0.813rem;
+  --h1-font-size: clamp(1.5rem, 5vw, 2rem);
+  --normal-font-size: clamp(0.875rem, 3vw, 1rem);
+  --small-font-size: clamp(0.75rem, 2.5vw, 0.813rem);
 
   --font-medium: 500;
+
+  --spacing-small: clamp(0.5rem, 2vw, 1rem);
+  --spacing-medium: clamp(1rem, 3vw, 2rem);
+  --spacing-large: clamp(1.5rem, 4vw, 3rem);
 }
 
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+}
+
+body {
+  font-family: var(--body-font);
+  font-size: var(--normal-font-size);
+  color: var(--white-color);
+  min-height: 100vh;
+  min-height: -webkit-fill-available; /* Pour iOS */
 }
 
 body,
@@ -61,7 +73,7 @@ img {
   object-position: center;
 }
 
-.login__form{
+.login__form {
   position: relative;
   background-color: hsla(0, 0%, 10%, 0.1);
   border: 2px solid var(--white-color);
@@ -101,12 +113,31 @@ img {
 }
 
 .login__input {
-  width: 100%;
-  padding-block: 0.8rem;
-  background: none;
+  background-color: transparent;
+  border: 1px solid var(--secondary-color);
+  padding: var(--spacing-xs);
+  font-size: var(--normal-font-size);
   color: var(--white-color);
-  position: relative;
-  z-index: 1;
+  border-radius: var(--border-radius-sm);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login__input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+/* Styles pour le remplissage automatique */
+.login__input:-webkit-autofill,
+.login__input:-webkit-autofill:hover,
+.login__input:-webkit-autofill:focus,
+.login__input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px transparent inset !important; /* Fond transparent */
+  -webkit-text-fill-color: var(
+    --white-color
+  ) !important; /* Couleur du texte blanc */
+  transition: background-color 5000s ease-in-out 0s; /* Empêche le changement de couleur */
 }
 
 .login__box-input {
@@ -340,12 +371,29 @@ img {
 }
 
 .register__input {
-  width: 100%;
-  padding-block: 0.8rem;
-  background: none;
+  background-color: transparent;
+  border: 1px solid var(--secondary-color);
+  padding: var(--spacing-xs);
+  font-size: var(--normal-font-size);
   color: var(--white-color);
-  position: relative;
-  z-index: 1;
+  border-radius: var(--border-radius-sm);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.register__input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+/* Styles pour le remplissage automatique */
+.register__input:-webkit-autofill,
+.register__input:-webkit-autofill:hover,
+.register__input:-webkit-autofill:focus,
+.register__input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px transparent inset !important; /* Fond transparent */
+  -webkit-text-fill-color: var(--white-color) !important; /* Texte blanc */
+  transition: background-color 5000s ease-in-out 0s; /* Empêche le changement de couleur */
 }
 
 .register__box-input {
@@ -405,56 +453,287 @@ img {
 
 /* Ajouter ces styles pour le modal d'erreur */
 .error-modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    max-width: 400px;
-    width: 90%;
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-width: 400px;
+  width: 90%;
 }
 
 .error-modal__content {
-    text-align: center;
+  text-align: center;
 }
 
 .error-modal__title {
-    color: #ff3860;
-    margin-bottom: 10px;
-    font-size: 1.2rem;
+  color: #ff3860;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
 }
 
 .error-modal__message {
-    margin-bottom: 20px;
-    color: #4a4a4a;
+  margin-bottom: 20px;
+  color: #4a4a4a;
 }
 
 .error-modal__button {
-    background-color: #ff3860;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  background-color: #ff3860;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .error-modal__button:hover {
-    background-color: #ff1443;
+  background-color: #ff1443;
 }
 
 .error-modal__overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.loading-spinner {
+  display: none;
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--white-color);
+  animation: spin 1s ease-in-out infinite;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Ajouter les styles pour l'indicateur de force du mot de passe */
+.password-strength,
+.strength-label {
+  display: none; /* Masque la barre de force et le label */
+}
+
+.strength-bar {
+  height: 4px;
+  background-color: #ddd;
+  margin-bottom: 4px;
+  border-radius: 2px;
+  position: relative;
+}
+
+.strength-bar::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s, background-color 0.3s;
+}
+
+.strength-label {
+  color: var(--white-color);
+  font-size: 0.7rem;
+}
+
+/* États de force du mot de passe */
+.weak .strength-bar::before {
+  width: 33%;
+  background-color: #ff4444;
+}
+
+.medium .strength-bar::before {
+  width: 66%;
+  background-color: #ffbb33;
+}
+
+.strong .strength-bar::before {
+  width: 100%;
+  background-color: #00c851;
+}
+
+.login__button,
+.register__button {
+  position: relative;
+}
+
+.login__button:disabled,
+.register__button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Ajouter des styles pour la validation */
+.login__input.invalid,
+.register__input.invalid {
+  border-color: #ff3860;
+}
+
+.input-error {
+  color: #ff3860;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+/* Conteneur principal - approche mobile-first */
+#auth-container {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  padding: var(--spacing-small);
+}
+
+/* Styles des formulaires */
+.login__form,
+.register__form {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: var(--spacing-medium);
+  background-color: hsla(0, 0%, 10%, 0.1);
+  border: 2px solid var(--white-color);
+  border-radius: 1rem;
+  backdrop-filter: blur(8px);
+}
+
+/* Adaptation des images de fond */
+.login__img,
+.register__img {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: -1;
+}
+
+/* Adaptation des titres */
+.login__title,
+.register__title {
+  font-size: var(--h1-font-size);
+  margin-bottom: var(--spacing-medium);
+  text-align: center;
+}
+
+/* Adaptation des champs de formulaire */
+.login__box,
+.register__box {
+  margin-bottom: var(--spacing-medium);
+}
+
+.login__input,
+.register__input {
+  width: 100%;
+  padding: var(--spacing-small);
+  font-size: var(--normal-font-size);
+}
+
+/* Adaptation des boutons */
+.login__button,
+.register__button {
+  width: 100%;
+  padding: var(--spacing-small);
+  margin-bottom: var(--spacing-medium);
+  min-height: 44px; /* Pour une meilleure accessibilité tactile */
+}
+
+/* Adaptation du modal d'erreur */
+.error-modal {
+  width: 90%;
+  max-width: 320px;
+  padding: var(--spacing-medium);
+}
+
+/* Adaptation de l'indicateur de force du mot de passe */
+.password-strength {
+  margin-top: var(--spacing-small);
+}
+
+/* Media queries pour les plus grands écrans */
+@media screen and (min-width: 576px) {
+  .login__form,
+  .register__form {
+    padding: var(--spacing-large);
+    max-width: 432px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .login__form,
+  .register__form {
+    margin-top: var(--spacing-large);
+  }
+}
+
+/* Ajustements pour éviter les problèmes de zoom sur iOS */
+@media screen and (max-width: 576px) {
+  input[type="email"],
+  input[type="password"] {
+    font-size: 16px; /* Empêche le zoom automatique sur iOS */
+  }
+
+  .login__box-input,
+  .register__box-input {
+    margin-bottom: var(--spacing-medium);
+  }
+}
+
+/* Amélioration de l'accessibilité tactile */
+@media (hover: none) and (pointer: coarse) {
+  .login__button,
+  .register__button,
+  .error-modal__button,
+  .login__eye,
+  .register__eye {
+    min-height: 44px;
+    min-width: 44px;
+    padding: var(--spacing-small);
+  }
+
+  .login__check-input {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Gestion de l'orientation */
+@media screen and (orientation: landscape) and (max-height: 576px) {
+  #auth-container {
+    min-height: auto;
+    padding: var(--spacing-medium);
+  }
+
+  .login__form,
+  .register__form {
+    margin: var(--spacing-medium) auto;
+  }
+}
+
+/* Support des écrans de grande taille */
+@media screen and (min-width: 1200px) {
+  .login__form,
+  .register__form {
+    max-width: 480px;
+  }
 }

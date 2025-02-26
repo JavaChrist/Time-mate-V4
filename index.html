@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Module de Login</title>
     <link rel="stylesheet" href="./login.css">
     <link rel="shortcut icon" href="./assets/images/Favicon.ico" type="image/x-icon">
@@ -45,7 +45,10 @@
                     <a href="#" class="login__forgot">Mot de passe oublié?</a>
                 </div>
 
-                <button class="login__button">Login</button>
+                <button class="login__button">
+                    <span class="button-text">Login</span>
+                    <div class="loading-spinner"></div>
+                </button>
 
                 <p>
                     Vous n'avez pas de compte?
@@ -79,6 +82,10 @@
                                 placeholder=" ">
                             <label for="register-password" class="register__label">Password</label>
                             <i class="ri-eye-off-line register__eye" id="register-eye"></i>
+                            <div class="password-strength" id="password-strength">
+                                <div class="strength-bar"></div>
+                                <div class="strength-label">Force du mot de passe</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -117,20 +124,47 @@
 
     <!-- Remplacer le script de gestion de connexion par celui-ci -->
     <script>
-        document.querySelector('.login__form').addEventListener('submit', function (e) {
+        // Ajouter une protection contre les tentatives multiples
+        let loginAttempts = 0;
+        const MAX_ATTEMPTS = 3;
+        const LOCKOUT_TIME = 5 * 60 * 1000; // 5 minutes
+
+        document.querySelector('.login__form').addEventListener('submit', async function (e) {
             e.preventDefault();
 
+            if (loginAttempts >= MAX_ATTEMPTS) {
+                const remainingTime = getRemainingLockoutTime();
+                if (remainingTime > 0) {
+                    showErrorModal(`Trop de tentatives. Réessayez dans ${Math.ceil(remainingTime / 60000)} minutes.`);
+                    return;
+                }
+                loginAttempts = 0;
+            }
+
+            setLoading(true, '.login__button');
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
+            const rememberMe = document.getElementById('login-remember').checked;
 
-            firebase.auth().signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    window.location.href = './app.html';
-                })
-                .catch((error) => {
-                    console.error('Erreur de connexion:', error);
-                    showErrorModal(getErrorMessage(error.code));
-                });
+            try {
+                // Définir la persistance avant la connexion
+                await firebase.auth().setPersistence(
+                    rememberMe ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION
+                );
+
+                // Puis se connecter
+                await firebase.auth().signInWithEmailAndPassword(email, password);
+                window.location.href = './app.html';
+            } catch (error) {
+                loginAttempts++;
+                if (loginAttempts >= MAX_ATTEMPTS) {
+                    setLockoutTime();
+                }
+                console.error('Erreur de connexion:', error);
+                showErrorModal(getErrorMessage(error.code));
+            } finally {
+                setLoading(false, '.login__button');
+            }
         });
 
         // Fonction pour afficher le modal d'erreur
@@ -183,15 +217,32 @@
                     return 'Une erreur est survenue lors de la connexion. Veuillez réessayer.';
             }
         }
+
+        // Fonction pour gérer l'état de chargement
+        function setLoading(isLoading, buttonSelector) {
+            const button = document.querySelector(buttonSelector);
+            const spinner = button.querySelector('.loading-spinner');
+            const text = button.querySelector('.button-text');
+
+            button.disabled = isLoading;
+            spinner.style.display = isLoading ? 'block' : 'none';
+            text.style.display = isLoading ? 'none' : 'block';
+        }
     </script>
 
     <!-- Remplacer ou ajouter ce script pour gérer l'inscription -->
     <script>
         document.querySelector('.register__form').addEventListener('submit', function (e) {
             e.preventDefault();
+            const password = document.getElementById('register-password').value;
+            const errors = validatePassword(password);
+
+            if (errors.length > 0) {
+                showErrorModal(errors.join('\n'), 'Mot de passe invalide');
+                return;
+            }
 
             const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
 
             firebase.auth().createUserWithEmailAndPassword(email, password)
                 .then((userCredential) => {
@@ -220,6 +271,97 @@
                     return 'Une erreur est survenue lors de l\'inscription. Veuillez réessayer.';
             }
         }
+
+        // Ajouter avant l'inscription
+        function validatePassword(password) {
+            const minLength = 6;
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasLowerCase = /[a-z]/.test(password);
+            const hasNumbers = /\d/.test(password);
+            const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+            const errors = [];
+            if (password.length < minLength) errors.push(`Le mot de passe doit contenir au moins ${minLength} caractères`);
+            if (!hasUpperCase) errors.push('Au moins une majuscule');
+            if (!hasLowerCase) errors.push('Au moins une minuscule');
+            if (!hasNumbers) errors.push('Au moins un chiffre');
+            if (!hasSpecialChar) errors.push('Au moins un caractère spécial');
+
+            return errors;
+        }
+    </script>
+
+    <!-- Ajouter la validation en temps réel des champs -->
+    <script>
+        document.getElementById('register-email').addEventListener('input', function (e) {
+            const email = e.target.value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailRegex.test(email)) {
+                e.target.setCustomValidity('Email invalide');
+            } else {
+                e.target.setCustomValidity('');
+            }
+        });
+    </script>
+
+    <!-- Ajouter la possibilité de voir le mot de passe -->
+    <script>
+        document.getElementById('login-eye').addEventListener('click', function () {
+            const passwordInput = document.getElementById('login-password');
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            this.className = `ri-eye${type === 'password' ? '-off' : ''}-line login__eye`;
+        });
+    </script>
+
+    <!-- Ajouter la validation en temps réel du mot de passe -->
+    <script>
+        document.getElementById('register-password').addEventListener('input', function (e) {
+            const password = e.target.value;
+            const strengthIndicator = document.getElementById('password-strength');
+            const errors = validatePassword(password);
+
+            // Mettre à jour l'indicateur de force
+            if (errors.length >= 4) {
+                strengthIndicator.className = 'password-strength weak';
+                strengthIndicator.querySelector('.strength-label').textContent = 'Faible';
+            } else if (errors.length >= 2) {
+                strengthIndicator.className = 'password-strength medium';
+                strengthIndicator.querySelector('.strength-label').textContent = 'Moyen';
+            } else {
+                strengthIndicator.className = 'password-strength strong';
+                strengthIndicator.querySelector('.strength-label').textContent = 'Fort';
+            }
+        });
+    </script>
+
+    <!-- Ajouter la gestion de la visibilité du mot de passe pour l'inscription -->
+    <script>
+        document.getElementById('register-eye').addEventListener('click', function () {
+            const passwordInput = document.getElementById('register-password');
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            this.className = `ri-eye${type === 'password' ? '-off' : ''}-line register__eye`;
+        });
+    </script>
+
+    <!-- Améliorer la validation email en temps réel -->
+    <script>
+        document.getElementById('register-email').addEventListener('input', function (e) {
+            const email = e.target.value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'input-error';
+
+            if (!emailRegex.test(email)) {
+                e.target.classList.add('invalid');
+                e.target.setCustomValidity('Email invalide');
+            } else {
+                e.target.classList.remove('invalid');
+                e.target.setCustomValidity('');
+            }
+        });
     </script>
 </body>
 

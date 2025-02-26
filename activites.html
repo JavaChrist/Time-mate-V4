@@ -3,10 +3,11 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Activités et Temps Réel - TimeMate</title>
-  <link rel="stylesheet" href="main.css">
-  <link rel="shortcut icon" href="/assets/images/Favicon.ico" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TimeMate - Activités</title>
+  <link rel="stylesheet" href="./activites.css">
+  <link rel="shortcut icon" href="./assets/images/Favicon.ico" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
   <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -20,41 +21,60 @@
 </head>
 
 <body>
-  <header>
-    <h1>Tableau des Activités</h1>
+  <header class="header">
+    <h1 class="header__title">Activités</h1>
+    <div class="header__content container">
+      <nav class="nav">
+        <button onclick="location.href='app.html'" class="btn btn-primary">
+          <i class="ri-calendar-line"></i>
+          Retour au calendrier
+        </button>
+        <button id="reset-button" class="btn btn-secondary">
+          <i class="ri-delete-bin-line"></i>
+          Supprimer la sélection
+        </button>
+        <button id="logout-button" class="btn btn-secondary">
+          <i class="ri-logout-box-line"></i>
+          Déconnexion
+        </button>
+      </nav>
+    </div>
   </header>
 
-  <!-- Bouton Réinitialiser -->
-  <div class="button-container">
-    <button class="reset-button" id="reset-button" aria-label="Réinitialiser le tableau">Supprimer la séléction</button>
-    <button class="back-button" onclick="location.href='app.html'">Retour au calendrier</button>
-  </div>
+  <main class="container mt-4">
+    <div class="activities-table-container">
+      <!-- Bouton Réinitialiser -->
+      <div class="button-container">
+        <button class="reset-button" id="reset-button" aria-label="Réinitialiser le tableau">Supprimer la séléction</button>
+      </div>
 
-  <!-- Tableau des activités -->
-  <table id="activities-log">
-    <thead>
-      <tr>
-        <th style="width: 5%;">Sélection</th>
-        <th style="width: 55%;">Nom de l'activité</th>
-        <th style="width: 13.33%;">Heures prévues</th>
-        <th style="width: 13.33%;">Heures réalisées</th>
-        <th style="width: 13.33%;">Temps restant</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Les activités seront ajoutées ici par JavaScript -->
-    </tbody>
-  </table>
+      <!-- Tableau des activités -->
+      <table id="activities-log">
+        <thead>
+          <tr>
+            <th style="width: 5%;">Sélection</th>
+            <th style="width: 55%;">Nom de l'activité</th>
+            <th style="width: 13.33%;">Heures prévues</th>
+            <th style="width: 13.33%;">Heures réalisées</th>
+            <th style="width: 13.33%;">Temps restant</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Les activités seront ajoutées ici par JavaScript -->
+        </tbody>
+      </table>
 
-  <!-- Boutons d'export -->
-  <div class="export-buttons">
-    <button onclick="exportToExcel()" class="export-btn excel-btn">
-      <i class="fas fa-file-excel"></i> Exporter en Excel
-    </button>
-    <button onclick="exportToPDF()" class="export-btn pdf-btn">
-      <i class="fas fa-file-pdf"></i> Exporter en PDF
-    </button>
-  </div>
+      <!-- Boutons d'export -->
+      <div class="export-buttons">
+        <button onclick="exportToExcel()" class="excel-btn">
+          <i class="fas fa-file-excel"></i> Exporter en Excel
+        </button>
+        <button onclick="exportToPDF()" class="pdf-btn">
+          <i class="fas fa-file-pdf"></i> Exporter en PDF
+        </button>
+      </div>
+    </div>
+  </main>
 
   <!-- Scripts -->
   <script src="activites.js"></script>
