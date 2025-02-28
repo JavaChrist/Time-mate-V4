@@ -44,7 +44,8 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  background-color: rgb(128, 159, 237);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: var(--primary-color);
 }
 
 .header__content {
@@ -64,11 +65,12 @@ body {
   width: 100%;
   height: 40px;
   margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .header__title {
   font-size: var(--h2-font-size);
-  color: var(--primary-color);
+  color: var(--white-color);
 }
 
 /* Navigation des semaines dans le header */
@@ -108,9 +110,16 @@ body {
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--border-radius-sm);
   border: none;
+  border-radius: 10px;
   cursor: pointer;
   font-size: var(--normal-font-size);
   transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  transition: background-color 0.3s;
+  box-shadow: 0 0 10px rgba(79, 5, 5, 0.433);
 }
 
 .btn-primary {
@@ -121,6 +130,10 @@ body {
 .btn-secondary {
   background-color: var(--secondary-color);
   color: var(--white-color);
+}
+
+.btn:hover {
+  background-color: #0056b3;
 }
 
 .btn-primary,
@@ -147,7 +160,7 @@ body {
   gap: var(--spacing-xs);
   margin-bottom: var(--spacing-sm);
   min-width: 600px;
-  padding-top:25px;
+  padding-top: 25px;
 }
 
 .calendar-body {
@@ -177,15 +190,17 @@ body {
 .delete-activity-btn {
   color: white;
   background-color: var(--primary-color);
+  transition: background-color 0.3s;
   padding: 5px;
   border-radius: 50%;
-  font-size: 14px;
+  font-size: 20px;
   line-height: 1;
   display: inline-block;
   text-align: center;
   cursor: pointer;
-  margin-left: 30px;
-  margin-right: 5px;
+  margin: 10px;
+  position: relative;
+  left: 70px;
 }
 
 .delete-activity-btn:hover {
@@ -237,6 +252,30 @@ body {
   margin-bottom: var(--spacing-md);
 }
 
+#save-event {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--primary-color);
+  color: var(--white-color);
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: var(--normal-font-size);
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  margin-top: var(--spacing-md);
+}
+
+#save-event:hover {
+  background-color: #0056b3; /* Couleur légèrement plus foncée pour l'effet de survol */
+  transform: translateY(-2px); /* Légère élévation pour l'effet de survol */
+}
+
+#save-event:active {
+  background-color: #004494; /* Couleur encore plus foncée pour l'effet de clic */
+  transform: translateY(0); /* Remettre à plat lors du clic */
+}
+
+
 /* Formulaire */
 .form-group {
   display: flex;
@@ -244,6 +283,12 @@ body {
   align-items: center;
   margin-bottom: var(--spacing-sm);
   text-align: left;
+}
+
+#activity-color {
+  width: 150px;
+  height: 50px;
+  /* border: 1px solid var(--secondary-color); */
 }
 
 .form-group label {
@@ -277,3 +322,4 @@ body {
 .time-inputs span {
   color: #666;
 }
+

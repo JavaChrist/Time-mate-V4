@@ -46,7 +46,7 @@ body {
 }
 
 .header {
-  background-color: rgb(128, 159, 237);
+  background-color: var(--primary-color);
   color: var(--white-color);
   position: fixed;
   top: 0;
@@ -54,6 +54,7 @@ body {
   right: 0;
   z-index: 1;
   height: 150px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header__content {
@@ -63,10 +64,9 @@ body {
 
 .header__title {
   font-size: var(--h1-font-size);
-  color: var(--primary-color);
+  color: var(--white-color);
   margin-left: 20px;
   margin-top;: 20px;
-
 }
 
 .nav {
@@ -80,6 +80,7 @@ body {
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--border-radius-sm);
   border: none;
+  border-radius: 10px;
   cursor: pointer;
   font-size: var(--normal-font-size);
   transition: background-color 0.3s;
@@ -133,23 +134,105 @@ tbody tr:hover {
   background-color: #e0e0e0;
 }
 
-.export-buttons {
-  display: flex;
-  gap: var(--spacing-sm);
-  margin-top: var(--spacing-md);
+#activities-log {
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background-color: var(--light-gray);
+  border-radius: var(--border-radius-md);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  overflow-x: auto;
 }
 
-.excel-btn{
+#activities-log {
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background-color: var(--light-gray);
+  border-radius: var(--border-radius-md);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Augmenter l'ombre */
+  width: 100%;
+  overflow-x: auto;
+}
+
+#activities-log h2 {
+  font-size: var(--h2-font-size);
+  color: var(--primary-color);
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+}
+
+#activities-log table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: var(--border-radius-md); /* Assurez-vous que le tableau a aussi des coins arrondis */
+  overflow: hidden; /* Pour que les coins arrondis soient visibles */
+}
+
+#activities-log th,
+#activities-log td {
+  padding: var(--spacing-xs);
+  text-align: left;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+#activities-log th {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+  font-weight: bold;
+}
+
+#activities-log tbody tr:nth-child(odd) {
+  background-color: #f2f2f2;
+}
+
+#activities-log tbody tr:hover {
+  background-color: #e0e0e0;
+}
+
+#activities-log .activity-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+#activities-log .activity-actions button {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#activities-log .edit-btn {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+}
+
+#activities-log .delete-btn {
+  background-color: var(--danger-color);
+  color: var(--white-color);
+}
+
+#activities-log .edit-btn:hover,
+#activities-log .delete-btn:hover {
+  transform: scale(1.05);
+}
+
+.export-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.excel-btn {
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--border-radius-sm);
   background-color: green;
   color: var(--white-color);
   cursor: pointer;
   transition: background-color 0.3s;
-    box-shadow: 0 0 10px rgba(79, 5, 5, 0.433);
+  box-shadow: 0 0 10px rgba(79, 5, 5, 0.433);
 }
 
-.pdf-btn{
+.pdf-btn {
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--border-radius-sm);
   background-color: red;
@@ -158,9 +241,11 @@ tbody tr:hover {
   transition: background-color 0.3s;
   box-shadow: 0 0 10px rgba(79, 5, 5, 0.433);
 }
+
 .excel-btn:hover {
   background-color: #0056b3;
 }
+
 .pdf-btn:hover {
   background-color: #0056b3;
 }
@@ -171,29 +256,30 @@ tbody tr:hover {
 }
 
 button {
-    padding: 10px 20px;
-    border-radius: 8px;
-    background-color: #007bff;
-    color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    box-shadow: 0 0 10px rgba(79, 5, 5, 0.433);
-    margin-top: 10px;
-  }
-  .button-container {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row-reverse;
-    align-items: center;
-    margin: 20px 0;
-    gap: 10px;
-  } 
-  .export-btn,
+  padding: 10px 20px;
+  border-radius: 10px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  box-shadow: 0 0 10px rgba(79, 5, 5, 0.433);
+  margin-top: 10px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row-reverse;
+  align-items: center;
+  margin: 20px 0;
+  gap: 20px;
+}
+
 .excel-btn,
 .pdf-btn,
 .btn-primary,
 .btn-secondary {
-transition: transform 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out;
 }
 
 .export-btn:hover,
@@ -201,5 +287,5 @@ transition: transform 0.2s ease-in-out;
 .pdf-btn:hover,
 .btn-primary:hover,
 .btn-secondary:hover {
-transform: scale(1.05);
+  transform: scale(1.05);
 }
